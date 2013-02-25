@@ -1,0 +1,46 @@
+<template name="home">
+<div class="row">
+	<div class="span4 offset2 recentActivity">
+		{{> activityFeed}}
+	</div>
+	<div class="span4">
+		{{> standings}}
+	</div>
+ </div>
+</template>
+
+<template name="activityFeed">
+<h3>Recent Activity</h3>
+<a class="btn btn-mini postButton"><i class="icon-pencil"></i>Add</a>
+{{#each recentEntries}}
+	{{> activityEntry}}
+{{/each}}
+</template>
+
+<template name="activityEntry">
+<div class="activityEntry media">
+	<a class="pull-left" href="#">
+    	<img class="media-object img-polaroid" src="http://www.rambill.com/images/stuart_small@2x.jpg">
+ 	</a>
+ 	<div class="media-body">
+		<h4 class="name media-heading">{{username}}</h4>
+		<p>{{this.content}}</p>
+		<div class="cheers">
+		<a class="cheersButton btn {{userCheered}}" href="#"><i class="icon-thumbs-up icon-white"></i>Cheers</a>
+		{{#each this.cheers}}
+		<a href="#" class="mini-profile-photo" style="background-image:url('http://www.rambill.com/images/stuart_small@2x.jpg');"></a>
+		{{/each}}
+		</div>
+		<div class="jeers">
+		<a class="jeersButton btn {{userJeered}}" href="#"><i class="icon-thumbs-down icon-white"></i>Jeers</a>
+		{{#each this.jeers}}
+		<a href="#" class="mini-profile-photo" style="background-image:url('http://www.rambill.com/images/stuart_small@2x.jpg');"></a>
+		{{/each}}
+		</div>
+	</div>
+</div>
+</template>
+
+<template name="standings">
+<h3>Standings</h3>
+</template>

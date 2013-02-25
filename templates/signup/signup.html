@@ -1,0 +1,17 @@
+<template name="signup">
+	<div class="row">
+	<p class="span8 offset2">Welcome to the league. This is just the beginning of what I hope will become a much more full featured site.</p>
+	</div>
+	<div class="row">
+	<form class="span8 offset2">
+		<input type="hidden" value="{{inviteCode}}"/>
+		<div class="row">
+			<div class="span2"><label>Name:</label></div><div class="span4"><input type="text" disabled="true" value="{{userName}}"	/></div>
+		</div>
+		<div class="row buttonDiv">
+			<input type="submit" id="createAccountButton" value="Create Account"/>
+		</div>
+	</form>
+	</div>
+
+</template>

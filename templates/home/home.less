@@ -1,0 +1,72 @@
+.recentActivity {
+
+	h3 {
+		display: inline-block;
+	}
+
+	.postButton {
+		margin-left: 12px;
+		margin-top: -8px;
+	}
+
+	.activityEntry {
+
+		border-bottom: 1px solid #CCC;
+
+		.cheers {
+			margin-top:10px;
+			margin-bottom:8px;
+		}
+
+		.jeers {
+			margin-top:8px;
+			margin-bottom:10px;
+		}
+
+		a.mini-profile-photo {
+			width: 24px;
+			height: 24px;
+			border-radius: 3px;
+			display:inline-block;
+			background-size: 100% 100%;
+		}
+
+		.cheersButton, .jeersButton {
+			font-weight: bold;
+			text-transform: uppercase;
+			text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.75);
+			text-align: left;
+			font-size: 10px;
+			padding: 1px 2px;
+			display: inline-block;
+			width: 70px;
+			color: #EEE;
+			background: -webkit-linear-gradient(#444, #222);
+			border-radius: 3px;
+			margin-right: 10px;
+
+			&:hover {
+				text-decoration: none;
+			}
+
+			.icon-thumbs-up, .icon-thumbs-down {
+				display: inline-block;
+				margin: 0 8px 0 2px;
+			}
+		}
+
+		.cheersButton.active {
+			background-image:-webkit-linear-gradient(top, #62c462, #51a351);
+			text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.45);
+			box-shadow:inset 0 0px 3px rgba(0,0,0,0.6);
+			border: 1px solid #333;
+		}
+
+		.jeersButton.active {
+			background-image:-webkit-linear-gradient(top, #ee5f5b, #bd362f);
+			text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.45);
+			box-shadow:inset 0 0px 3px rgba(0,0,0,0.6);
+			border: 1px solid #333;
+		}
+	}
+}

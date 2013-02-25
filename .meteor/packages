@@ -6,3 +6,12 @@
 autopublish
 insecure
 preserve-inputs
+bootstrap
+backbone
+http
+less
+showdown
+accounts-facebook
+accounts-base
+accounts-ui-unstyled
+accounts-password

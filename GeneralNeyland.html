@@ -1,13 +1,53 @@
 <head>
-  <title>GeneralNeyland</title>
+  <title>General Neyland's Cup</title>
 </head>
 
 <body>
-  {{> hello}}
+{{> body}}
 </body>
 
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+<template name="body">
+<div class="container">
+ <div class="header"><h1>General Neyland's Cup</h1></div>
+ <div class="row">
+{{> nav}}
+</div>
+ {{#if pageIs "home"}}
+ 	{{> home}}
+ {{/if}}
+
+  {{#if pageIs "signup"}}
+ 	{{> signup}}
+ {{/if}}
+
+ {{#if pageIs "user"}}
+ 	<h2>User</h2>
+ {{/if}}
+
+</div>
+</template>
+
+<template name="nav">
+<nav class="span8 offset2">
+ 	<ul class="inline">
+ 		<li class="navItem"><a href="/">Home</a></li>
+ 		 <li class="dropdown navItem">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+			Teams
+			<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu">
+				{{>teamsDropdown}}
+			</ul>
+		</li>
+ 		<li class="navItem"><a href="/messages">Messages</a></li>
+ 		<li class="navItem"><a href="/history">Hall of Records</a></li>
+ 	</ul>
+</nav>
+</template>
+
+<template name="teamsDropdown">
+	{{#each owners}}
+		<li><a href="#">{{this.username}}</a></li>
+	{{/each}}
 </template>
