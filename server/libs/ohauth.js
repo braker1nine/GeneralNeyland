@@ -3,8 +3,13 @@
 var ohauth = {};
 
 ohauth.qsString = function(obj) {
+    delete obj.realm;
     return Object.keys(obj).sort().map(function(key) {
-        return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+        if (key != 'realm') {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+        } else {
+            return '';
+        }
     }).join('&');
 };
 
@@ -18,16 +23,23 @@ ohauth.stringQs = function(str) {
     }, {});
 };
 
-ohauth.xhr = function(method, url, auth, data, options, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (4 == xhr.readyState && 0 !== xhr.status) callback(xhr);
-    };
+// Editing for 
+ohauth.xhr = function(method, url, auth, data, options) {
+    var format;
+    if (auth.format) {
+        format = auth.format;
+        delete auth.format;
+    }
     var headers = (options && options.header) || { 'Content-Type': 'application/x-www-form-urlencoded' };
-    xhr.open(method, url, true);
-    xhr.setRequestHeader('Authorization', 'OAuth ' + ohauth.authHeader(auth));
-    for (var h in headers) xhr.setRequestHeader(h, headers[h]);
-    xhr.send(data);
+    var authHeader ='OAuth ' + ohauth.authHeader(auth);
+    console.log('Request URL = ', url);
+    console.log('Auth header = ', authHeader);
+    if (format) url += '?format=' + format;
+    return Meteor.http.get(url, {
+        headers: {
+            'Authorization':authHeader,
+        }
+    });
 };
 
 ohauth.nonce = function() {
@@ -38,9 +50,17 @@ ohauth.nonce = function() {
 };
 
 ohauth.authHeader = function(obj) {
-    return Object.keys(obj).sort().map(function(key) {
-        return encodeURIComponent(key) + '="' + encodeURIComponent(obj[key]) + '"';
+
+    var ret = 'realm="yahooapis.com", ';
+    delete obj.realm;
+    ret += Object.keys(obj).sort().map(function(key) {
+        if (key != 'realm') {
+            return encodeURIComponent(key) + '="' + encodeURIComponent(obj[key]) + '"';
+        } else {
+            return '';
+        }
     }).join(', ');
+    return ret;
 };
 
 ohauth.timestamp = function() { return ~~((+new Date()) / 1000); };

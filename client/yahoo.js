@@ -13,7 +13,10 @@ if (Meteor.isClient) {
       }
 
       Meteor.call('getAccessToken', vals, requestTokenData, function(error, result){
-        var vals = deParam(result);
+
+        debugger;
+        var vals = result;
+
         for (var key in vals) {
           localStorage[key] = vals[key];
         }

@@ -1,0 +1,38 @@
+<template name="user">
+<div class="row owner-info">
+	<div class="span2 offset1 leftside">
+		<div class="profile-photo main" style="background-image:url('http://www.rambill.com/images/stuart_3x4.jpg');"></div>
+	</div>
+	<div class="span8 rightside">
+		<div class="row">
+			<div class="span4">
+				<h2 class="name">{{this.profile.firstName}} {{this.profile.lastName}}</h2>
+				<h4 class="team_name">This is a team name</h4>
+			</div>
+			<div class="span3">
+				<div class="well well-small">
+					<span>text</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row tabs">
+	<div class="span10 offset1">
+		<ul class="type_selector nav nav-tabs">
+			<li class="active"><a href="#">Posts</a></li>
+			<li><a href="#">Roster</a></li>
+			<li><a href="#">Transactions</a></li>
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="span10 offset1 tab-content">
+		<div class="posts">
+			{{#each posts}}
+				{{> activityEntry}}
+			{{/each}}
+		</div>
+	</div>
+</div>
+</template>

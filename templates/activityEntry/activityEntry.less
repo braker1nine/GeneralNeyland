@@ -1,0 +1,96 @@
+.activityEntry {
+
+	border-bottom: 1px solid #CCC;
+	padding-bottom: 15px;
+
+	h4.name {
+		font-size: 14px;
+
+		.postTime {
+			color: #AAA;
+			font-weight: normal;
+			font-size: 12px;
+		}
+	}
+
+	p {
+		font-size: 12px;
+	}
+
+	.reactions {
+
+		.button {
+
+			&.like {
+				width:44px;
+			}
+
+			&.hate {
+				width: 102px;
+			}
+
+			&.meh {
+				width:44px;
+			}
+
+			&.active:before {
+				content:'Un-';
+			}
+			color: #333;
+			font-size: 12px;
+			text-decoration: underline;
+			text-align: right;
+			display: inline-block;
+		}
+
+		.count {
+			display:inline-block;
+			background-color: #333;
+			padding: 2px 4px;
+			color: white;
+			font-size: 10px;
+			line-height: 10px;
+			border-radius: 2px;
+			margin:0 14px 0 8px;
+		}
+	}
+
+	.comments {
+
+		margin-top:10px;
+
+		.comment {
+
+			padding: 8px 6px;
+			border-bottom: 1px dotted white;
+			margin: 0;
+			background-color: #EEE;
+
+			img {
+				width:32px;
+			}
+
+			p {
+				.authorName {
+					font-weight: bold;
+				}
+			}
+		}
+
+		.commentForm {
+			margin-top: 10px;
+
+			textarea {
+				height: 22px;
+				width: 225px;
+				resize:none;
+			}
+
+			.commentButton {
+				float:right;
+				margin-right: 10px;
+			}
+		}
+	}
+
+}

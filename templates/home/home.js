@@ -1,39 +1,55 @@
 if (Meteor.isClient) {
 
-
 	Template.activityFeed.recentEntries = function() {
-		return Posts.find().fetch()
-	}
+		return Posts.find({}, {sort:[["created_at", "desc"]]}).fetch()
+	};
 
-	Template.activityEntry.username = function() {
-		var author = Meteor.users.findOne({profile:{id:this.authorUserId}});
-	    return author.username;
-	}
+	Template.activityFeed.events({
+		'click .createPost .btn': function(e) {
+			var text = $(e.target).parent().children('textarea').val();
+			if (text && text != "") {
+				Posts.insert({
+					content:text,
+					likes:[],
+					mehs:[],
+					hates:[],
+					authorUserId:Meteor.user().profile.id,
+					targetUserId:Meteor.user().profile.id,
+					comments:[],
+					created_at:Date.now()
+				}, function (err, id) {
+					if (err) {
 
-	Template.activityEntry.userCheered = function() {
-		if (this.cheers && this.cheers.indexOf(Meteor.user().profile.id) > -1) return 'active';
-	}
-
-	Template.activityEntry.userJeered = function() {
-		if (this.jeers && this.jeers.indexOf(Meteor.user().profile.id) > -1) return 'active';
-	}
-
-	Template.activityEntry.events({
-		'click .cheersButton':function(e) {
-			if (this.cheers && this.cheers.indexOf(Meteor.user().profile.id) >= 0) {
-				this.cheers.splice(this.cheers.indexOf(Meteor.user().profile.id), 1);
-				Posts.update(this._id, {$set: {cheers:this.cheers}});
-			} else {
-				Posts.update(this._id, {$push: {cheers:Meteor.user().profile.id}});
-			}
-		},
-		'click .jeersButton':function(e) {
-			if (this.jeers && this.jeers.indexOf(Meteor.user().profile.id) >= 0) {
-				this.jeers.splice(this.jeers.indexOf(Meteor.user().profile.id), 1);
-				Posts.update(this._id, {$set: {jeers:this.jeers}});
-			} else {
-				Posts.update(this._id, {$push: {jeers:Meteor.user().profile.id}});
+					} else {
+						console.log("Created post ", id);
+					}
+				})
 			}
 		}
 	});
+
+	function ResetPostReactions() {
+		Posts.find().forEach(function(post) { 
+			Posts.update(post._id, {$set:{likes:[]}});
+			Posts.update(post._id, {$set:{mehs:[]}});
+			Posts.update(post._id, {$set:{hates:[]}});
+		});
+	}
+
+
+	Template.standings.teams = function() {
+		return Meteor.users.find().fetch(); // need to sort these
+	};
+
+	Template.standingsRow.events({
+		'click tr.user':function(e){
+			Router.navigate('/user/'+this._id, {trigger:true});
+		}
+	})
+
+}
+
+if (Meteor.isServer) {
+	Meteor.methods({
+	})
 }

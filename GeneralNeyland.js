@@ -1,7 +1,5 @@
 
-if (Meteor.isClient) {
-
-  function deParam(string) {
+function deParam(string) {
     var obj = {};
     var entries = string.split('&');
     for (var i=0; i < entries.length; i++) {
@@ -11,6 +9,8 @@ if (Meteor.isClient) {
 
     return obj;
   };
+
+if (Meteor.isClient) {
 
   /*Template.hello.events({
     'click input' : function () {
@@ -30,6 +30,10 @@ if (Meteor.isClient) {
     return Session.equals("page", page);
   }
 
+  Template.body.user = function() {
+    return Meteor.users.findOne(Session.get('viewingUser'));
+  }
+
   Template.nav.events({
     'click li.navItem a':function(e) {
       e.preventDefault();
@@ -44,9 +48,22 @@ if (Meteor.isClient) {
     return Meteor.users.find().fetch();
   }
 
-  Meteor.startup(function () {
-    Backbone.history.start({pushState: true}); 
-  });
+  Template.loginForm.events({
+    'click #facebookButton':function(e){
+
+    },
+
+    'click #yahooButton':function(e){
+      Meteor.call('getRequestToken', function(error, result){
+        console.log(result);
+        var requestTokenData = deParam(result.content);
+        for (var key in requestTokenData) {
+          localStorage[key] = requestTokenData[key];
+        }
+        window.location.href = decodeURIComponent(requestTokenData['xoauth_request_auth_url']);
+      });
+    }
+  })
 }
 
 if (Meteor.isServer) {

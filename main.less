@@ -31,3 +31,44 @@ nav {
 		}
 	}
 }
+
+#facebookButton, #yahooButton {
+	display: inline-block;
+	padding:4px 10px;
+	border:1px solid #AAA;
+	border-radius:3px;
+	color:white;
+	text-decoration: none;
+}
+
+#facebookButton {
+	background-color: blue;
+}
+
+#yahooButton {
+	background-color: purple;
+}
+
+
+/* Overriding bootstrap styles */
+
+.nav-pills {
+
+	> .active {
+
+		> a {
+
+			&:hover {
+				background-color: #555;
+			}
+
+			background-color: #333;
+		}
+	}
+
+	> :not(.active) {
+		> a {
+			color: #333;
+		}
+	}
+}

@@ -1,17 +1,25 @@
 <template name="signup">
 	<div class="row">
-	<p class="span8 offset2">Welcome to the league. This is just the beginning of what I hope will become a much more full featured site.</p>
+	<p class="span8 offset2">Welcome to the league. This is the signup page. No you can't customize this stuff right now, but I might left you do so later. Follow the link to authenticate Yahoo and your account will be created.</p>
 	</div>
 	<div class="row">
+	{{#with signupUser}}
 	<form class="span8 offset2">
 		<input type="hidden" value="{{inviteCode}}"/>
 		<div class="row">
-			<div class="span2"><label>Name:</label></div><div class="span4"><input type="text" disabled="true" value="{{userName}}"	/></div>
+			<div class="span2"><label>First Name:</label></div><div class="span4"><input type="text" /></div>
+		</div>
+		<div class="row">
+			<div class="span2"><label>Last Name:</label></div><div class="span4"><input type="text" /></div>
+		</div>
+		<div class="row">
+			<div class="span2"><label>Username:</label></div><div class="span4"><input type="text"  /></div>
 		</div>
 		<div class="row buttonDiv">
 			<input type="submit" id="createAccountButton" value="Create Account"/>
 		</div>
 	</form>
+	{{/with}}
 	</div>
 
 </template>

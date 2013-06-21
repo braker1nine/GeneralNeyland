@@ -1,5 +1,7 @@
 <head>
   <title>General Neyland's Cup</title>
+  <script type="text/javascript" src="//use.typekit.net/uqq0mtc.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 
 <body>
@@ -8,7 +10,11 @@
 
 <template name="body">
 <div class="container">
- <div class="header"><h1>General Neyland's Cup</h1></div>
+ <div class="header"><h1 class="tk-stencil-std">General Neyland's Cup</h1></div>
+   {{#if pageIs "signup"}}
+ 	{{> signup}}
+ {{else}}
+ {{#if currentUser}}
  <div class="row">
 {{> nav}}
 </div>
@@ -16,19 +22,23 @@
  	{{> home}}
  {{/if}}
 
-  {{#if pageIs "signup"}}
- 	{{> signup}}
- {{/if}}
-
  {{#if pageIs "user"}}
- 	<h2>User</h2>
+ 	{{#with user}}
+ 		{{#if this._id}}
+	 		{{> user}}
+	 	{{/if}}
+	{{/with}}
+ {{/if}}
+ {{else}}
+ 	{{> loginForm}}
+ {{/if}}
  {{/if}}
 
 </div>
 </template>
 
 <template name="nav">
-<nav class="span8 offset2">
+<nav class="span10 offset1">
  	<ul class="inline">
  		<li class="navItem"><a href="/">Home</a></li>
  		 <li class="dropdown navItem">
@@ -48,6 +58,25 @@
 
 <template name="teamsDropdown">
 	{{#each owners}}
-		<li><a href="#">{{this.username}}</a></li>
+		<li><a href="#">{{this.profile.firstName}}</a></li>
 	{{/each}}
 </template>
+
+<template name="loginForm">
+	<div class="row">
+		<div class="offset3 span6">
+			<form id="loginForm">
+				<fieldset>
+					<label for="username">Username</label>
+					<input id="username" type="text"/>
+					<label for="password">Password</label>
+					<input id="password" type="password"/>
+				</fieldset>
+				<a href="#" id="yahooButton">Login with Yahoo</a>
+				<a href="#" id="facebookButton">Login with Facebook</a>
+			</form>
+		</div>
+	</div>
+</template>
+
+

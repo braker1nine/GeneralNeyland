@@ -1,0 +1,36 @@
+<template name="activityEntry">
+<div class="activityEntry media">
+	<a class="pull-left" href="#">
+    	<img class="media-object img-polaroid" src="http://www.rambill.com/images/stuart_small@2x.jpg">
+ 	</a>
+ 	<div class="media-body">
+		<h4 class="name media-heading">{{username}}<span class="postTime">{{postTime}}</span></h4>
+		<p>{{this.content}}</p>
+		<div class="reactions">
+			<a href="#" data-type="likes" class="like button {{action 'likes'}}">Like</a><a href="#" class="likes count">{{variable "likes"}}</a>
+			<a href="#" data-type="mehs" class="meh button {{action 'mehs'}}">Meh</a><a href="#" class="mehs count">{{variable "mehs"}}</a>
+			<a href="#" data-type="hates" class="hate button {{action 'hates'}}">Hate Hate Hate</a><a href="#" class="hates count">{{variable "hates"}}</a>
+		</div>
+		<div class="comments">
+			{{#each comments}}
+				{{> comment}}
+			{{/each}}
+			<div class="commentForm">
+				<textarea></textarea>
+				<a class="btn btn-inverse commentButton">Post</a>
+			</div>
+		</div>
+	</div>
+</div>
+</template>
+
+<template name="comment">
+<div class="comment media">
+	<a class="pull-left" href="#">
+    	<img class="media-object img-polaroid" src="http://www.rambill.com/images/stuart_small@2x.jpg">
+ 	</a>
+ 	<div class="media-body">
+ 		<p><span class="authorName">{{authorName}}</span> - {{this.content}}</p>
+ 	</div>
+</div>
+</template>

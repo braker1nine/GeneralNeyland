@@ -1,9 +1,9 @@
 <template name="home">
 <div class="row">
-	<div class="span4 offset2 recentActivity">
+	<div class="span5 offset1 recentActivity">
 		{{> activityFeed}}
 	</div>
-	<div class="span4">
+	<div class="span5">
 		{{> standings}}
 	</div>
  </div>
@@ -12,35 +12,42 @@
 <template name="activityFeed">
 <h3>Recent Activity</h3>
 <a class="btn btn-mini postButton"><i class="icon-pencil"></i>Add</a>
+<div class="createPost">
+	<textarea></textarea>
+	<a class="btn">Post</a>
+</div>
 {{#each recentEntries}}
 	{{> activityEntry}}
 {{/each}}
 </template>
 
-<template name="activityEntry">
-<div class="activityEntry media">
-	<a class="pull-left" href="#">
-    	<img class="media-object img-polaroid" src="http://www.rambill.com/images/stuart_small@2x.jpg">
- 	</a>
- 	<div class="media-body">
-		<h4 class="name media-heading">{{username}}</h4>
-		<p>{{this.content}}</p>
-		<div class="cheers">
-		<a class="cheersButton btn {{userCheered}}" href="#"><i class="icon-thumbs-up icon-white"></i>Cheers</a>
-		{{#each this.cheers}}
-		<a href="#" class="mini-profile-photo" style="background-image:url('http://www.rambill.com/images/stuart_small@2x.jpg');"></a>
-		{{/each}}
-		</div>
-		<div class="jeers">
-		<a class="jeersButton btn {{userJeered}}" href="#"><i class="icon-thumbs-down icon-white"></i>Jeers</a>
-		{{#each this.jeers}}
-		<a href="#" class="mini-profile-photo" style="background-image:url('http://www.rambill.com/images/stuart_small@2x.jpg');"></a>
-		{{/each}}
-		</div>
-	</div>
-</div>
-</template>
-
 <template name="standings">
 <h3>Standings</h3>
+<table class="table standings">
+    <thead>
+        <tr>
+        	<th class="img" colspan="2">Name</th>
+			<th class="delta">Change</th>
+			<th class="pts">Pts</th>
+        </tr>
+    </thead>
+    <tbody>
+    	{{#each teams}}
+    		{{> standingsRow}}
+    	{{/each}}
+    </tbody>
+</table>
 </template>
+
+
+<template name="standingsRow">
+	<tr class="user">
+		<td class="img"></td>
+		<td class="name">{{this.profile.firstName}} {{this.profile.lastName}}</td>
+		<td class="delta"></td>
+		<td class="pts"></td>
+	</tr>
+</template>
+
+
+

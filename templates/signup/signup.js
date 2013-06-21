@@ -1,52 +1,90 @@
+InvitedUsers = new Meteor.Collection('invitedUsers')
+
 if (Meteor.isServer) {
 	var ownerData = [
 		{
 			id:1,
-			name:'Chris Brakebill' 
+			firstName:'Chris',
+			lastName:'Brakebill',
+			userName:'chrisbrakebill',
+			email:'chris.brakebill@gmail.com',
 		},
 		{
 			id:2,
-			name: 'Danny Petersen'
+			firstName: 'Danny',
+			lastName:'Petersen',
+			userName:'dannypetersen',
+			email:'dpeters924@gmail.com',
 		},
 		{
 			id:3,
-			name: 'Dan Wells'
+			firstName: 'Dan',
+			lastName:'Wells',
+			userName:'danwells',
+			email:'danthemanwells@gmail.com',
 		},
 		{
 			id:4,
-			name: 'Mike Gilmore'
+			firstName: 'Mike',
+			lastName:'Gilmore',
+			userName:'mikegilmore',
+			email:'michael.t.gilmore@gmail.com',
 		},
 		{
 			id:5,
-			name: 'Bret Vukoder' 
+			firstName: 'Bret',
+			lastName:'Vukoder' ,
+			userName:'bretvukoder',
+			email:'bvukoder@gmail.com',
 		},
 		{
 			id:6,
-			name: 'Jay Slagle'
+			firstName: 'Jay',
+			lastName:'Slagle',
+			userName:'jayslagle',
+			email:'jayslagle@gmail.com',
 		},
 		{
 			id:7,
-			name: 'Henry Shiflett'
+			firstName: 'Henry',
+			lastName:'Shiflett',
+			userName:'henryshiflett',
+			email:'henryshiflett@gmail.com',
 		},
 		{
 			id:8,
-			name: 'Jameson Bundy'
+			firstName: 'Jameson',
+			lastName:'Bundy',
+			userName:'jamesonbundy',
+			email:'jameson.bundy@gmail.com',
 		},
 		{
 			id:9,
-			name: 'Stuart Deaderick'
+			firstName: 'Stuart',
+			lastName:'Deaderick',
+			userName:'stuartdeaderick',
+			email:'stuart.deaderick@gmail.com',
 		},
 		{
 			id:10,
-			name: 'Eric Sollenberger'
+			firstName: 'Eric',
+			lastName:'Sollenberger',
+			userName:'ericsollenberger',
+			email:'',
 		},
 		{
 			id:11,
-			name: 'Mark Hoffman'
+			firstName: 'Mark',
+			lastName:'Hoffman',
+			userName:'markhoffman',
+			email:'bmarkhoffman86@gmail.com',
 		},
 		{
 			id:12,
-			name: 'Matt Davis'
+			firstName: 'Matt',
+			lastName:'Davis',
+			userName:'mattdavis',
+			email:'mdavis865@gmail.com',
 		}
 	];
 
@@ -55,13 +93,20 @@ if (Meteor.isServer) {
 		// Need to initialize the signupDataCollection
 		for (var i = ownerData.length - 1; i >= 0; i--) {
 			if (Meteor.users.find({profile:{id:ownerData[i].id}}).count() == 0){
-				Accounts.createUser({
-					username: ownerData[i].name,
-					password: ownerData[i].name,
+				
+				if (InvitedUsers.find({id:ownerData[i].id}).count() == 0) {
+					ownerData[i].inviteCode = ohauth.nonce();
+					InvitedUsers.insert(ownerData[i]);
+				}
+				/*Accounts.createUser({
+					username: ownerData[i].userName,
+					password: ownerData[i].userName,
 					profile: {
-						id: ownerData[i].id
+						id: ownerData[i].id,
+						firstName: ownerData[i].firstName,
+						lastName: ownerData[i].lastName
 					}
-				})
+				})*/
 			}
 		};
 	});
@@ -78,10 +123,6 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
 	Template.signup.inviteCode = function() {
 		return Session.get("signupcode");
-	};
-
-	Template.signup.userName = function() {
-		return "Chris Brakebill";
 	};
 
 	Template.signup.events({
