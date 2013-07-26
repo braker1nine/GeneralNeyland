@@ -1,0 +1,142 @@
+@import "../../variables";
+
+.activityEntry {
+
+	list-style: none;
+	padding: 10px 10px 15px 10px;
+	color:@darkGrey;
+	background-color: @lightgrey;
+	border-radius: 1px;
+	box-shadow: 0 2px rgba(0,0,0,0.7);
+
+	h4.name {
+		font-size: 16px;
+		margin:10px 0 0 0;
+
+		.postTime {
+			font-weight: normal;
+			font-size: 12px;
+			margin-right: 4px;
+			float: right;
+		}
+	}
+
+	p {
+		font-size: 14px;
+		clear:both;
+	}
+
+	img.poster_img {
+		border-radius: 3px;
+		float:left;
+		margin: 0 10px 10px 0;
+	}
+
+	.reactions {
+
+		.button {
+			@background:white;
+			display: inline-block;
+			background-color: @background;
+			color: @darkGrey;
+			border-radius: 3px;
+			line-height: 22px;
+			font-size: 12px;
+			-webkit-transition: all 120ms linear;
+
+			.threeD(@background);
+		}
+
+		.reaction.active {
+			padding-top: 2px;
+			&.likes > .button {
+				@background: rgb(255, 165, 68);
+				background-color: @background;
+				.threeDPushed(@background);
+			}
+
+			&.mehs > .button {
+				@background: rgb(255, 250, 119);
+				background-color: @background;
+				.threeDPushed(@background);
+			}
+
+			&.hates > .button {
+				@background: #F38080;
+				background-color: @background;
+				.threeDPushed(@background);
+			}
+		}
+
+		.name {
+			text-decoration: none;
+			text-align: right;
+			display: inline-block;
+			padding:0 10px;
+		}
+
+		.count {
+			margin: 0;
+			margin-right: 10px;
+			color:inherit;
+			display: inline-block;
+			text-decoration: none;
+			vertical-align: top;
+			padding: 0 6px;
+			width: 24px;
+			text-align: center;
+		}
+	}
+
+	.comments {
+
+		margin-top:10px;
+
+		.comment {
+
+			padding: 8px 6px;
+			margin: 10px 0;
+			background-color: rgba(255,255,255,0.45);
+
+			img {
+				width:32px;
+				float: left;
+			}
+
+			.authorName {
+				display: block;
+				font-size: 12px;
+				font-weight: bold;
+
+				.commentTime {
+					float: right;
+					font-weight: normal;
+				}
+			}
+
+			p {
+				margin:0;
+			}
+		}
+
+		.commentForm {
+			margin-top: 10px;
+
+			textarea {
+				padding:6px;
+				height: 60px;
+				border:none;
+				width: 320px;
+				resize: none;
+			}
+
+			.commentButton {
+				float:right;
+
+				background-color: #80BD85;
+				.threeD(#80BD85);
+			}
+		}
+	}
+
+}

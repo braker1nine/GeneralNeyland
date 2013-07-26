@@ -1,15 +1,30 @@
 if (Meteor.isClient){
-	var Router;
 	Meteor.startup(function() {
+
 		var Workspace = Backbone.Router.extend({
 			routes: {
 				"":"home",
-				"signup/:code":"signup",
-				"user/:name":"user"
+				"post/:post_id/":"post",
+				"draft/":"draft",
+				"history/":"history",
+				"*notFound":"notFound"
 			},
 
 			home: function() {
-				Session.set("page", "home");
+				if (Meteor.user()) {
+					Session.set("page", "home");
+				} else {
+					Session.set("page","login");
+				}
+			},
+
+			post: function(post_id) {
+				if (Meteor.user()) {
+					Session.set("page", "post");
+					Session.set("viewing_post", post_id);
+				} else {
+					Session.set("page","login");
+				}
 			},
 
 			signup: function(code) {
@@ -22,11 +37,29 @@ if (Meteor.isClient){
 				}
 			},
 
-			user: function(name) {
-				Session.set("page", "user");
-				Session.set("viewingUser", name);
-				console.log('Routing to user ' + name);
-			}	
+			draft: function() {
+				if (Meteor.user()) {
+					Session.set("page","draft");
+				} else {
+					Session.set("page","login");
+				}
+			},
+
+			history: function() {
+				if(Meteor.user()) {
+					Session.set("page", "history");
+				} else {
+					Session.set("page", "login");
+				}
+			},
+
+			notFound:function(path) {
+				if (Meteor.user()) {
+					Session.set("page","notFound");
+				} else {
+					Session.set("page","login");
+				}
+			}
 
 		});
 

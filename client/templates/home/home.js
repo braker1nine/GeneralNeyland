@@ -1,11 +1,31 @@
 if (Meteor.isClient) {
 
+
+	/*PostsHandle = Meteor.subscribe('posts');
+	PostsCursor = null;
+	Deps.autorun(function() {
+		if (PostsHandle != undefined && PostsHandle.ready()) {
+			PostsCursor = Posts.find();
+
+			PostsCursor.observe({
+				added: function(id, fields) {
+
+				},
+				changed:function(id, fields) {
+					debugger;
+				}
+			});
+
+		}
+	});*/
+
+
 	Template.activityFeed.recentEntries = function() {
-		return Posts.find({}, {sort:[["created_at", "desc"]]}).fetch()
+		return Posts.find({}, {sort:[["created_at", "desc"]]}).fetch();
 	};
 
 	Template.activityFeed.events({
-		'click .createPost .btn': function(e) {
+		'click .createPost .postButton': function(e) {
 			var text = $(e.target).parent().children('textarea').val();
 			if (text && text != "") {
 				Posts.insert({
@@ -36,20 +56,4 @@ if (Meteor.isClient) {
 		});
 	}
 
-
-	Template.standings.teams = function() {
-		return Meteor.users.find().fetch(); // need to sort these
-	};
-
-	Template.standingsRow.events({
-		'click tr.user':function(e){
-			Router.navigate('/user/'+this._id, {trigger:true});
-		}
-	})
-
-}
-
-if (Meteor.isServer) {
-	Meteor.methods({
-	})
 }

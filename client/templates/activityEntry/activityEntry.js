@@ -1,29 +1,17 @@
 if (Meteor.isClient) {
-    
-	Template.activityEntry.preserve(['img.img-polaroid']);
 
-	Template.activityEntry.username = function() {
-		var author = Meteor.users.findOne({'profile.id':this.authorUserId});
-		if (author) {
-			return author.profile.firstName + ' ' + author.profile.lastName
-		} else {
-		    return 'Kaiser Sose';
-		}
-	}
-
-	Template.activityEntry.postTime = function() {
-		var postDate = new Date(this.created_at);
+	function printTimeAgo(time) {
 		var now = new Date();
-		var diff = now.getTime() - postDate.getTime();
+		var diff = now.getTime() - time;
 
 		function printFunction(val, unit) {
-			return ' - posted about ' + val + ' '+ unit + (val != 1 ? 's':'') + ' ago.';
+			return val + ' '+ unit + (val != 1 ? 's':'') + ' ago';
 		}
 
 		var val;
 		if (diff < 60*1000) {
 			val = Math.round(diff/1000);
-			return  ' - posted ' + val + ' seconds ago.';
+			return  val + ' seconds ago';
 		} else if (diff < 1000*60*60) {
 			val = Math.round(diff/(60*1000));
 			return printFunction(val, 'minute');
@@ -43,6 +31,21 @@ if (Meteor.isClient) {
 			val = Math.round(diff/(1000*60*60*24*365));
 			return printFunction(val, 'year');
 		}
+	}
+    
+	Template.activityEntry.username = function() {
+		var author = Meteor.users.findOne({'profile.id':this.authorUserId});
+		if (author) {
+			return author.profile.firstName + ' ' + author.profile.lastName
+		} else {
+		    return 'Kaiser Sose';
+		}
+	}
+
+	Template.activityEntry.postTime = function() {
+		var postDate = new Date(this.created_at);
+		return printTimeAgo(postDate.getTime());
+		
 	};
 
 	Template.activityEntry.variable = function(type) {
@@ -65,17 +68,21 @@ if (Meteor.isClient) {
 
 	Template.activityEntry.events({
 		'click .reactions .button':function(e) {
+			debugger;
 			var type = e.target.dataset.type;
-			var obj = {};
+			var obj = {}, modifier;
 			
 			if (this[type] && this[type].indexOf(Meteor.user().profile.id) >= 0) {
 				this[type].splice(this[type].indexOf(Meteor.user().profile.id), 1);
 				obj[type] = this[type];
-				Posts.update(this._id, {$set: obj});
+				modifier = {$set:obj};
 			} else {
 				obj[type] = Meteor.user().profile.id;
-				Posts.update(this._id, {$push: obj});
+				modifier = {$push:obj};
 			}
+			Posts.update(this._id, modifier, function(error) {
+				debugger;
+			});
 		},
 
 		'click .commentButton':function(e) {
@@ -101,6 +108,10 @@ if (Meteor.isClient) {
 			return 'Kaiser Sose';
 		}
 	};
+
+	Template.comment.commentTime = function() {
+		return printTimeAgo(this.created_at);
+	}
 
 	Template.comment.preserve(['img.img-polaroid']);
 }

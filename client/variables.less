@@ -1,0 +1,20 @@
+@darkGrey: #333;
+@lightgrey: #E0E0E0;
+@linkColor: #222;
+
+
+
+/* Mixins */
+
+.threeD (@color) {
+	box-shadow:0 3px (@color - #444), 0 4px rgba(0,0,0,0.2);
+	border-radius: 3px;
+	padding: 2px 10px;
+}
+
+.threeDPushed (@color) {
+	box-shadow: 0 -1px rgba(0,0,0,0.5);
+	-webkit-transform: translate3d(0,2px,0);
+	transform: translate3d(0, 3px, 0);
+	color:rgba(0,0,0,0.8);
+}

@@ -1,0 +1,112 @@
+@import "../../variables";
+
+@background: #eee;
+
+.body {
+	width:940px;
+	padding: 0 10px;
+	margin:auto;
+}
+
+.recentActivity {
+
+	h3 {
+		display: inline-block;
+	}
+
+	.postButton {
+
+		background-color: #80BD85;
+		padding: 2px 10px;
+		border-radius:3px;
+
+		.threeD(#80BD85);
+	}
+
+	.createPost {
+		text-align: right;
+		textarea {
+
+			&:focus {
+				outline:0;
+			}
+
+			display: block;
+			resize:none;
+			height:80px;
+			width:100%;
+			margin-bottom: 10px;
+			border-radius: 2px;
+			border-color: rgba(0,0,0,0.2);
+		}
+
+		margin-bottom: 10px;
+	}
+
+}
+
+table.standings {
+	tbody {
+		tr {
+			cursor: pointer;
+		}
+	}
+}
+
+.container{
+	position: relative;
+}
+ 
+.margin{
+	height: 100%;
+	position: absolute; 
+	left: 50%;
+	width: 2px;
+	background: #2A3036;
+	bottom: 10px;
+	margin-left: -1px;
+	z-index: -1;
+}
+ 
+ul.timeline{
+	width:920px; /* total width */
+	position: relative;
+	list-style: none;
+	overflow: hidden; 
+	padding: 0px;
+	margin: 0px;
+
+	li:nth-child(even){
+		float:right;
+		clear:right;
+	}
+	li:nth-child(odd){
+		float:left;
+		clear:left;
+	}
+}
+ 
+.timeline > li{
+	width: 450px;
+	position: relative;
+	margin: 10px 0;
+}
+ 
+.timeline > li:before{
+	border: 7px solid;
+	content: '';
+	display: block;
+	position: absolute;
+}
+ 
+.timeline > li:nth-child(even):before{
+	border-color: transparent @lightgrey transparent transparent;
+	right: 100%;
+	top: 10px;
+}
+ 
+.timeline > li:nth-child(odd):before{
+	border-color: transparent transparent transparent @lightgrey;
+	left: 100%;
+	top: 10px;
+}
