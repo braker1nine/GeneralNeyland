@@ -1,0 +1,61 @@
+<template name="draft">
+	<div class="draft body">
+		<div class="available_players">
+			<h2>Available Players</h2>
+			{{>position_filter}}
+			{{>players}}
+		</div>
+		<div class="sidebar">
+			{{>draft_sidebar}}
+		</div>		
+	</div>
+</template>
+
+
+<template name="player_row">
+<tr>
+	<td class="player_name">{{this.firstName}} {{this.lastName}}</td>
+	<td class="player_position">{{position}}</td>
+	<td class="player_pro_team">{{pro_team}}</td>
+	<td class="player_percent_owned">{{percent_owned}}</td>
+</tr>
+</template>
+
+
+<template name="draft_sidebar">
+	<h3>What's Happening</h3>
+	<div class="upcoming_picks">
+		<h4>Current Pick</h4>
+
+		<h4>On Deck</h4>
+
+		<h4>In the Hole</h4>
+	</div>
+
+</template>
+
+<template name="position_filter">
+<ul class="positions-filter">
+	{{#each type}}
+		<li data-type="{{this.id}}" class="{{isActive this.id}}">{{this.name}}</li>
+	{{/each}}
+</ul>
+</template>
+
+<template name="players">
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Position</th>
+			<th>Pro Team</th>
+			<th>Percent Owned</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each player}}
+			{{>player_row}}
+		{{/each}}
+	</tbody>
+</table>
+</template>

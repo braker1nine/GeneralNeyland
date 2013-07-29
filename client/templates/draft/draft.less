@@ -1,0 +1,37 @@
+@import "../../variables";
+
+.draft .available_players {
+	width:80%;
+	float: left;
+}
+
+.draft .sidebar {
+	width:20%;
+	float: left;
+}
+
+
+/* Position Filter Styles */
+ul.positions-filter {
+	padding:0;
+}
+ul.positions-filter li {
+	text-align: center;
+	list-style: none;
+	display: inline-block;
+	width:70px;
+	padding: 0.4em 0.1em;
+	border-radius: 3px;
+	margin: 0 0.4em 0 0;
+
+	&:not(.active) {
+		background-color: @lightgrey;
+		.threeD(@lightgrey);
+	}
+
+	&.active {
+		background-color: @darkGrey;
+		.threeDPushed(@darkGrey);
+		color:@white;
+	}
+}

@@ -1,4 +1,4 @@
-InvitedUsers = new Meteor.Collection('invitedUsers')
+InvitedUsers = new Meteor.Collection('invitedUsers');
 
 var ownerData = [
 	{
