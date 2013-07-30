@@ -33,6 +33,20 @@ Posts.find({}, defaultOptions).observe({
 });
 initialized = true;
 
+Posts.allow({
+	insert:function(userId, doc) {
+		if (!userId) return false;
+
+
+		return true;
+	},
+	update:function(userId, doc, fieldNames, modifier) {
+		if (!userId) return false;
+
+		return true;
+	}
+})
+
 Meteor.publish('recent_posts', function() {
 
 });
@@ -150,7 +164,17 @@ Comments.find({}, defaultOptions).observe({
 		}
 	}
 });
+
 initialized = true;
+
+Comments.allow({
+	insert:function(userId, doc) {
+		if (!userId) return false;
+
+
+		return true;
+	}
+})
 
 /* Comment Model
 {
