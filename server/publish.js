@@ -164,11 +164,13 @@ Comments.find({}, defaultOptions).observe({
 			var sender = Meteor.users.findOne({'profile.id':comment.authorUserId}) || {profile: {firstName:'Kaiser', lastName:'Sose'}};
 
 			var body = '' + sender.profile.firstName + ' '  + sender.profile.lastName + ' commented on <a href="' + Meteor.absoluteUrl() + 'post/' + post._id + '/">a message</a>.';
-			sendEmailNotification({
-				from:(sender.emails && sender.emails.length ? sender.emails[0].address : 'notifications@generalneylandscup.com'),
-				to: emails,
-				body: body
-			});
+			if (emails.length) {
+				sendEmailNotification({
+					from:(sender.emails && sender.emails.length ? sender.emails[0].address : 'notifications@generalneylandscup.com'),
+					to: emails,
+					body: body
+				});
+			}
 		}
 	}
 });
