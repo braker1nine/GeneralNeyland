@@ -8,10 +8,21 @@ textarea:focus {
 	box-sizing: border-box;
 }
 
+html, body {
+	height:100%;
+}
+
 body {
 	padding:0;
 	margin:0;
 	color: @darkGrey;
+}
+
+.wrapper {
+	min-height: 100%;
+	height:auto;
+	margin-bottom: -61px;
+	padding-bottom: 61px;
 }
 
 .header {
@@ -25,4 +36,20 @@ body {
 	font-size: 24px;
 	margin-top: 30px;
 	color:@lightgrey - #111;
+}
+
+footer {
+	background-color: @darkGrey;
+	color:@white;
+	padding:20px;
+	height:61px;
+
+	ul {
+		margin:0;
+	}
+
+	li {
+		display: inline-block;
+		margin-right:20px;
+	}
 }

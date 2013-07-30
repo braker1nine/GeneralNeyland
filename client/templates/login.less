@@ -1,0 +1,29 @@
+@import "../variables";
+
+form {
+	width:300px;
+	margin:auto;
+
+	label{
+		display: block;
+		margin-top: 1em;
+	}
+	input[type="email"], input[type="password"] {
+		display: block;
+		box-shadow: none;
+		border-radius: 2px;
+		border:1px solid @lightgrey;
+		font-size: 14px;
+		padding:6px;
+		width:100%;
+		color:@darkGrey;
+	}
+
+	input[type="button"] {
+		.threeD(@lightgrey);
+		background-color: @lightgrey;
+		border:none;
+		float: right;
+		margin: 10px 0;
+	}
+}

@@ -35,6 +35,12 @@ if (Meteor.isClient) {
   }
 
   Template.loginForm.events({
+    'click input[type="button"]':function(e) {
+      Meteor.loginWithPassword($(e.target).siblings('input[type="email"]').val(), $(e.target).siblings('input[type="password"]').val(), function(err) {
+        Router.navigate('/', {trigger:true});
+        Session.set('page', 'home');
+      });
+    },
     'click #facebookButton':function(e){
 
     },

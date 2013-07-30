@@ -7,6 +7,7 @@ if (Meteor.isClient){
 				"post/:post_id/":"post",
 				"draft/":"draft",
 				"history/":"history",
+				"account/":"account",
 				"*notFound":"notFound"
 			},
 
@@ -48,6 +49,14 @@ if (Meteor.isClient){
 			history: function() {
 				if(Meteor.user()) {
 					Session.set("page", "history");
+				} else {
+					Session.set("page", "login");
+				}
+			},
+
+			account: function() {
+				if(Meteor.user()) {
+					Session.set("page", "account");
 				} else {
 					Session.set("page", "login");
 				}

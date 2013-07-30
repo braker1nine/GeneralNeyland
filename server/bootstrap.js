@@ -69,7 +69,7 @@ var ownerData = [
 		firstName: 'Eric',
 		lastName:'Sollenberger',
 		userName:'ericsollenberger',
-		email:'',
+		email:'esollenb@gmail.com',
 	},
 	{
 		id:11,
@@ -92,23 +92,35 @@ Meteor.startup(function() {
 	// Need to initialize the signupDataCollection
 	for (var i = ownerData.length - 1; i >= 0; i--) {
 		if (Meteor.users.find({profile:{id:ownerData[i].id}}).count() == 0){
-			
+			var owner = ownerData[i];
 			if (InvitedUsers.find({id:ownerData[i].id}).count() == 0) {
 
 				InvitedUsers.insert(ownerData[i]);
 			}
 
 			if (Meteor.users.find({username:ownerData[i].userName}).count() == 0) {
-				Accounts.createUser({
+				var password = (new Meteor.Collection.ObjectID())._str;
+				var id = Accounts.createUser({
 					email:ownerData[i].email,
 					username: ownerData[i].userName,
-					password: ownerData[i].userName,
+					password: password,
 					profile: {
 						id: ownerData[i].id,
 						firstName: ownerData[i].firstName,
 						lastName: ownerData[i].lastName
 					}
 				});
+
+				if (id) {
+					Email.send({
+						from:'chris.brakebill@gmail.com',
+						to:'chris.brakebill@gmail.com',
+						subject:'Welcome to General Neyland\'s Cup',
+						html: '<h1>An account has been created for you.</h1><br><b>Username:</b> ' + owner.email + '<br><b>Password:</b> ' + password + '<br>Login <a href="http://generalneylandscup.com">here.</a>'
+					})
+				}
+
+
 			}
 		}
 	};
