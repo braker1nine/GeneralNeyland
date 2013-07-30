@@ -1,5 +1,7 @@
 InvitedUsers = new Meteor.Collection('invitedUsers')
 
+isDev = process.env.ROOT_URL == 'http://localhost:3000';
+
 var ownerData = [
 	{
 		id:1,
@@ -99,7 +101,7 @@ Meteor.startup(function() {
 			}
 
 			if (Meteor.users.find({username:ownerData[i].userName}).count() == 0) {
-				var password = (new Meteor.Collection.ObjectID())._str;
+				var password = (isDev ? 'chris': (new Meteor.Collection.ObjectID())._str);
 				var id = Accounts.createUser({
 					email:ownerData[i].email,
 					username: ownerData[i].userName,
@@ -111,10 +113,10 @@ Meteor.startup(function() {
 					}
 				});
 
-				if (id) {
+				if (id && !isDev) {
 					Email.send({
 						from:'chris.brakebill@gmail.com',
-						to:'chris.brakebill@gmail.com',
+						to:owner.email,
 						subject:'Welcome to General Neyland\'s Cup',
 						html: '<h1>An account has been created for you.</h1><br><b>Username:</b> ' + owner.email + '<br><b>Password:</b> ' + password + '<br>Login <a href="http://generalneylandscup.com">here.</a>'
 					})
@@ -124,11 +126,4 @@ Meteor.startup(function() {
 			}
 		}
 	};
-});
-
-// Temporary
-Meteor.users.allow({
-	remove: function() {
-		return true;
-	}
 });
