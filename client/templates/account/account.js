@@ -16,11 +16,12 @@ Template.account.events({
 		}
 	},
 	'change .no_email_checkbox':function(e, tmpl) {
-		debugger;
-		var checked = e.target.value == "on";
+		var checked = e.target.checked;
 
-		Meteor.users.update({_id:Meteor.user()._id}, {$set:{"profile.disableEmails":checked}}, function(err, res) {
-			debugger;
+		Meteor.users.update({_id:Meteor.user()._id}, {$set:{"profile.disableEmails":checked}}, function(err) {
+			if (!err) {
+				Alert({text:'Email settings updated.'});
+			}
 		});
 	}
 });
@@ -28,7 +29,7 @@ Template.account.events({
 Template.account.isChecked = function() {
 	var user = Meteor.user();
 	if (user && user.profile && user.profile.disableEmails == true) {
-		return ' checked="checked"';
+		return ' checked';
 	} else {
 		return '';
 	}
