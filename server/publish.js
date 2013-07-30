@@ -24,7 +24,7 @@ Posts.find({}, defaultOptions).observe({
 		if (initialized) {
 			var users = Meteor.users.find().fetch();
 			var emails = _.map(_.filter(users, function(user) {
-				return user._id != post.authorId;
+				return user._id != post.authorId && user.profile.disableEmails != true;
 			}), function(user) {
 				return (user.emails && user.emails.length ? user.emails[0].address : '');
 			});
@@ -154,7 +154,8 @@ Comments.find({}, defaultOptions).observe({
 						{'profile.id':post.authorUserId}
 
 					]},
-					{$not:{'profile.id':comment.authorUserId}}
+					{$not:{'profile.id':comment.authorUserId}},
+					{$not:{'profile.disableEmails':true}}
 				]
 			}).fetch();
 			var emails = _.map(receivers, function(user) {

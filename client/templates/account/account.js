@@ -14,5 +14,22 @@ Template.account.events({
 		} else {
 			alert('Passwords don\'t match');
 		}
+	},
+	'change .no_email_checkbox':function(e, tmpl) {
+		debugger;
+		var checked = e.target.value == "on";
+
+		Meteor.users.update({_id:Meteor.user()._id}, {$set:{"profile.disableEmails":checked}}, function(err, res) {
+			debugger;
+		});
 	}
-})
+});
+
+Template.account.isChecked = function() {
+	var user = Meteor.user();
+	if (user && user.profile && user.profile.disableEmails == true) {
+		return ' checked="checked"';
+	} else {
+		return '';
+	}
+}
