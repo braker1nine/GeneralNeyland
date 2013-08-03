@@ -7,24 +7,29 @@ if (Meteor.isClient){
 				"post/:post_id/":"post",
 				"draft/":"draft",
 				"history/":"history",
+				"account/":"account",
 				"*notFound":"notFound"
 			},
 
 			home: function() {
-				if (Meteor.user()) {
-					Session.set("page", "home");
-				} else {
-					Session.set("page","login");
-				}
+				Deps.autorun(function() {
+					if (Meteor.user()) {
+						Session.set("page", "home");
+					} else {
+						Session.set("page","login");
+					}
+				});
 			},
 
 			post: function(post_id) {
-				if (Meteor.user()) {
-					Session.set("page", "post");
-					Session.set("viewing_post", post_id);
-				} else {
-					Session.set("page","login");
-				}
+				Deps.autorun(function() {
+					if (Meteor.user()) {
+						Session.set("page", "post");
+						Session.set("viewing_post", post_id);
+					} else {
+						Session.set("page","login");
+					}
+				});
 			},
 
 			signup: function(code) {
@@ -38,19 +43,33 @@ if (Meteor.isClient){
 			},
 
 			draft: function() {
-				if (Meteor.user()) {
-					Session.set("page","draft");
-				} else {
-					Session.set("page","login");
-				}
+				Deps.autorun(function() {
+					if (Meteor.user()) {
+						Session.set("page","draft");
+					} else {
+						Session.set("page","login");
+					}
+				});
 			},
 
 			history: function() {
-				if(Meteor.user()) {
-					Session.set("page", "history");
-				} else {
-					Session.set("page", "login");
-				}
+				Deps.autorun(function() {
+					if(Meteor.user()) {
+						Session.set("page", "history");
+					} else {
+						Session.set("page", "login");
+					}
+				});
+			},
+
+			account: function() {
+				Deps.autorun(function() {
+					if(Meteor.user()) {
+						Session.set("page", "account");
+					} else {
+						Session.set("page", "login");
+					}
+				});
 			},
 
 			notFound:function(path) {
@@ -65,6 +84,10 @@ if (Meteor.isClient){
 
 		Router = new Workspace;
 		
-		Backbone.history.start({pushState: true}); 
+		Deps.autorun(function(){
+			if (!Meteor.loggingIn()) {
+				Backbone.history.start({pushState: true}); 
+			}
+		})
 	});
 }

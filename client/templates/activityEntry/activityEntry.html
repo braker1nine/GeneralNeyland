@@ -1,7 +1,7 @@
 <template name="activityEntry">
 <li class="activityEntry media" id="post-{{this._id}}">
  	<div class="media-body">
-		<h4 class="name media-heading">{{username}}<span class="postTime">{{postTime}}</span></h4>
+		<h4 class="name media-heading">{{username}}<a class="postTime">{{postTime}}</a></h4>
 		<p>{{#markdown}}{{this.content}}{{/markdown}}</p>
 			<div class="reactions">
 				<span class="likes reaction {{action 'likes'}}"><a data-type="likes" class="name button">Like</a><a class="likes count">{{variable "likes"}}</a></span>

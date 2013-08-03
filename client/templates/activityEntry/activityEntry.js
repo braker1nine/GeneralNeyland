@@ -97,6 +97,9 @@ if (Meteor.isClient) {
 					console.log(err);
 				})
 			}
+		},
+		'click .postTime':function() {
+			Router.navigate('/post/' + this._id + '/', true);
 		}
 	});
 

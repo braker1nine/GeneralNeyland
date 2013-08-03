@@ -1,5 +1,10 @@
 if (Meteor.isClient) {
-
+	
+	Deps.autorun(function(){
+		if (!Meteor.loggingIn()) {
+			UsersHandle = Meteor.subscribe('users');
+		}
+	});
 
 	/*PostsHandle = Meteor.subscribe('posts');
 	PostsCursor = null;

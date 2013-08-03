@@ -9,20 +9,11 @@
 </body>
 
 <template name="body">
+<div class="wrapper">
  <div class="header">
  	<h1>General Neyland's Cup</h1>
- 	{{#if currentUser}}
- 		<a class="logout" style="float:right;">Logout</a>
- 	{{/if}}
  </div>
-   	{{#if pageIs "signup"}}
- 		{{> signup}}
- 	{{/if}}
- 	{{#if currentUser}}
- 		<div class="row">
 			{{> nav}}
-		</div>
-	{{/if}}
 	{{#if pageIs "home"}}
 		{{> home}}
 	{{/if}}
@@ -52,16 +43,35 @@
 	 	{{>loginForm}}
 	 {{/if}}
 
+	 {{#if pageIs "account"}}
+	 	{{>account}}
+	 {{/if}}
+	 </div>
+	<footer>
+		{{>footer}}
+	</footer>
+
 </template>
 
 <template name="nav">
 <nav class="span11 offset1">
+	{{#if currentUser}}
  	<ul class="inline">
  		<li class="navItem"><a href="/">Home</a></li>
  		<li class="navItem"><a href="/draft/">Draft</a></li>
  		<li class="navItem"><a href="/history/">Hall of Records</a></li>
+ 		<li class="navItem"><a href="/account/">Account</a></li>
  	</ul>
+ 	{{/if}}
 </nav>
+</template>
+
+<template name="footer">
+	{{#if currentUser}}
+	<ul class="footer_nav">
+		<li class="logout">Logout</li>
+	</ul>
+	{{/if}}
 </template>
 
 <template name="teamsDropdown">
@@ -76,7 +86,8 @@
 			<form id="loginForm">
 				<label for="email">Email</label><input type="email"/>
 				<label for="password">Password</label><input type="password"/>
-				<input type="submit" value="Login">
+				<input type="button" value="Login">
+				<div style="clear:both;"></div>
 			</form>
 		</div>
 	</div>

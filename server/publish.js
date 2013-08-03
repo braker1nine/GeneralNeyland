@@ -1,5 +1,13 @@
 function sendEmailNotification(options) {
-	console.log('Sending emails to', options);
+	if (isDev) {
+		console.log('Sending emails to', options);
+	} else {
+		Email.send({
+			to:options.to,
+			from:options.from,
+			html:options.body
+		})
+	}
 }
 
 
@@ -16,7 +24,7 @@ Posts.find({}, defaultOptions).observe({
 		if (initialized) {
 			var users = Meteor.users.find().fetch();
 			var emails = _.map(_.filter(users, function(user) {
-				return user._id != post.authorId;
+				return user._id != post.authorId && user.profile.disableEmails != true;
 			}), function(user) {
 				return (user.emails && user.emails.length ? user.emails[0].address : '');
 			});
@@ -32,6 +40,20 @@ Posts.find({}, defaultOptions).observe({
 	}
 });
 initialized = true;
+
+Posts.allow({
+	insert:function(userId, doc) {
+		if (!userId) return false;
+
+
+		return true;
+	},
+	update:function(userId, doc, fieldNames, modifier) {
+		if (!userId) return false;
+
+		return true;
+	}
+})
 
 Meteor.publish('recent_posts', function() {
 
@@ -132,7 +154,8 @@ Comments.find({}, defaultOptions).observe({
 						{'profile.id':post.authorUserId}
 
 					]},
-					{$not:{'profile.id':comment.authorUserId}}
+					{$not:{'profile.id':comment.authorUserId}},
+					{$not:{'profile.disableEmails':true}}
 				]
 			}).fetch();
 			var emails = _.map(receivers, function(user) {
@@ -142,15 +165,27 @@ Comments.find({}, defaultOptions).observe({
 			var sender = Meteor.users.findOne({'profile.id':comment.authorUserId}) || {profile: {firstName:'Kaiser', lastName:'Sose'}};
 
 			var body = '' + sender.profile.firstName + ' '  + sender.profile.lastName + ' commented on <a href="' + Meteor.absoluteUrl() + 'post/' + post._id + '/">a message</a>.';
-			sendEmailNotification({
-				from:(sender.emails && sender.emails.length ? sender.emails[0].address : 'notifications@generalneylandscup.com'),
-				to: emails,
-				body: body
-			});
+			if (emails.length) {
+				sendEmailNotification({
+					from:(sender.emails && sender.emails.length ? sender.emails[0].address : 'notifications@generalneylandscup.com'),
+					to: emails,
+					body: body
+				});
+			}
 		}
 	}
 });
+
 initialized = true;
+
+Comments.allow({
+	insert:function(userId, doc) {
+		if (!userId) return false;
+
+
+		return true;
+	}
+})
 
 /* Comment Model
 {
@@ -184,5 +219,15 @@ Meteor.methods({
 
 	mostLikedUser: function() {
 
+	}
+})
+
+
+
+Meteor.publish('users', function(){
+	if (this.userId) {
+		return Meteor.users.find();
+	} else {
+		return [];
 	}
 })
