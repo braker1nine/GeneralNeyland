@@ -1,19 +1,27 @@
 <template name="draft">
 	<div class="draft body">
-		<div class="available_players">
-			<h2>Available Players</h2>
-			{{>position_filter}}
-			{{>players}}
-		</div>
-		<div class="sidebar">
-			{{>draft_sidebar}}
-		</div>		
+		{{#if draftHasBegun}}
+			<div class="available_players">
+				<h2>Available Players <input class="player_search" type="text" value="{{searchValue}}" placeholder="Search first or last name"/></h2>
+				{{>position_filter}}
+				{{>players}}
+			</div>
+			<div class="sidebar">
+				{{>draft_sidebar}}
+			</div>
+			<div style="clear:both;"></div>	
+		{{else}}
+			{{#if admin}}
+			{{else}}
+			{{/if}}
+		{{/if}}	
 	</div>
 </template>
 
 
 <template name="player_row">
-<tr>
+<tr class="player_row">
+	<td class="draft_button_cell"><div class="draft_button {{#if isUserPick}}active{{/if}}">Draft</div></td>
 	<td class="player_name">{{this.firstName}} {{this.lastName}}</td>
 	<td class="player_position">{{position}}</td>
 	<td class="player_pro_team">{{pro_team}}</td>
@@ -43,9 +51,10 @@
 </template>
 
 <template name="players">
-<table>
+<table class="players_table">
 	<thead>
 		<tr>
+			<th></th>
 			<th>Name</th>
 			<th>Position</th>
 			<th>Pro Team</th>
@@ -53,9 +62,15 @@
 		</tr>
 	</thead>
 	<tbody>
-		{{#each player}}
-			{{>player_row}}
-		{{/each}}
+		{{#if no_players}}
+			<tr class="empty_row">
+				<td colspan="5">No players meet your criteria</td>
+			</tr>
+		{{else}}
+			{{#each player}}
+				{{>player_row}}
+			{{/each}}
+		{{/if}}
 	</tbody>
 </table>
 </template>

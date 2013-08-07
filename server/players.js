@@ -11,12 +11,32 @@ var slotCatMap = {
 	17:[5],
 	23:[2,3,4]
 }
-Meteor.publish('players', function(slotCategoryId) {
-	if (slotCategoryId == -1) {
-		return Players.find({}, {limit:100, sort: {percentOwned:-1, lastName:1}});
-	} else {
-		return Players.find({defaultPositionId: {$in: slotCatMap[slotCategoryId]}}, {limit:100, sort: {percentOwned:-1}});
+Meteor.publish('players', function(slotCategoryId, name) {
+	var selector = {};
+
+	var options = {
+		limit:100,
+		sort: {
+			percentOwned:-1,
+			lastName:1
+		}
+	};
+
+	if (slotCategoryId != -1) {
+		selector.defaultPositionId =  {
+			$in:slotCatMap[slotCategoryId]
+		}
 	}
+
+	if (name && name != '') {
+		selector['$or'] = [
+			{firstName:{$regex : ".*"+name+".*", $options:'i'}},
+			{lastName:{$regex : ".*"+name+".*", $options:'i'}}
+		]
+	}
+
+
+	return Players.find(selector, options);
 })
 
 Meteor.startup(function(){

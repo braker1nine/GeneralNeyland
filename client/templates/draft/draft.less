@@ -3,11 +3,51 @@
 .draft .available_players {
 	width:80%;
 	float: left;
+	padding: 10px 16px;
+}
+
+.draft_button {
+	display: inline-block;
+	background-color: #DDD;
+	.threeDPushed(#DDD);
+	color:#999;
+
+	&.active {
+		color:white;
+		background-color:rgb(235, 83, 83);
+		.threeD(rgb(235, 83, 83));
+	}
+}
+
+.draft .available_players h2 input {
+	float: right;
+	margin-right: 10px;
+	box-shadow: none;
+	border: 1px solid lightgray;
+	height: 30px;
+	padding: 10px;
+	color: grey;
+	font-size: 12px;
+	width:210px;
 }
 
 .draft .sidebar {
 	width:20%;
 	float: left;
+}
+
+.players_table {
+	box-sizing:border-box;
+	width:100%;
+}
+
+.players_table th {
+	text-align: left;
+}
+
+.player_row td {
+	border-top:1px solid @lightgrey;
+	padding: 10px inherit;
 }
 
 

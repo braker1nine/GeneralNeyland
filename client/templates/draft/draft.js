@@ -1,11 +1,11 @@
 Session.setDefault('position_filter', -1);
+Session.setDefault('name_filter', '');
 
 Deps.autorun(function() {
-	Meteor.subscribe('players', Session.get('position_filter'));	
+	Meteor.subscribe('players', Session.get('position_filter'), Session.get('name_filter'));	
 });
 
 Players = new Meteor.Collection('players');
-
 
 var positionMap = {
 		1:{
@@ -76,10 +76,6 @@ var position_types = [
 	{
 		id:6,
 		name: 'TE',
-	},
-	{
-		id:23,
-		name: 'FLEX',
 	},
 	{
 		id:16,
@@ -359,13 +355,39 @@ var proTeams = {
 		}
 	}
 
+Template.draft.preserve(['input.player_search']);
+
+var searchT;
+Template.draft.events({
+	'keyup input.player_search, blur input.player_search':function(e) {
+		clearTimeout(searchT);
+		searchT = setTimeout(function() {
+			Session.set('name_filter', e.target.value);
+			Deps.flush();
+			if (e.type != 'blur') {
+				e.target.focus();
+			}
+		}, 300);
+	}
+})
+
+_.extend(Template.draft, {
+	draftHasBegun: function() {
+		return Drafts.find
+	},
+	searchValue: function() {
+		return Session.get('name_filter');
+	},
+	admin: function() {
+
+	}
+})
 
 _.extend(Template.position_filter, {
 	type: function() {
 		return position_types;
 	},
 	isActive: function(id) {
-		debugger;
 		if (Session.equals('position_filter', id + '')) {
 			return 'active';
 		} else {
@@ -385,6 +407,10 @@ Template.position_filter.events({
 _.extend(Template.players, {
 	player: function() {
 		return Players.find({}, {limit:100, sort:{percentOwned:-1}});
+	},
+
+	no_players: function() {
+		return Players.find({}).count() == 0;
 	}
 });
 
@@ -397,5 +423,8 @@ _.extend(Template.player_row, {
 	},
 	percent_owned: function() {
 		return this.percentOwned.toFixed(1) + '%';
-	}
+	},
+	isUserPick: function() {
+		return false;
+	},
 })
