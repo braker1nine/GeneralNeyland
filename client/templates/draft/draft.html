@@ -1,27 +1,53 @@
 <template name="draft">
 	<div class="draft body">
-		{{#if draftHasBegun}}
-			<div class="available_players">
-				<h2>Available Players <input class="player_search" type="text" value="{{searchValue}}" placeholder="Search first or last name"/></h2>
-				{{>position_filter}}
-				{{>players}}
+
+		{{#if admin}}
+			<div class="admin_tools">
+				<h4>Admin Tools</h4>
+				<button class="set_order" {{#if draft_created}}disabled="disabled"{{/if}}>Set Draft Order</button>
+				<button class="initialize" {{#if draft_created}}disabled="disabled"{{/if}}>Initialize Draft</button>
+				<button class="begin_draft" {{#unless draft_created}}disabled="disabled"{{/unless}} {{#if draft_begun}}disabled="disabled"{{/if}}>Begin Draft</button>
+				<button class="admin_draft_toggle">{{#if admin_draft}}Exit{{else}}Enter{{/if}} Admin Draft Mode</button>
+				<button class="reset_draft" {{#unless draft_created}}disabled="disabled"{{/unless}}>Reset Draft</button>
+				<button class="reset_draft_order" {{#if draft_created}}disabled="disabled"{{/if}}>Reset Draft Order</button>
+				<button class="refresh_players">Refresh Players</button>
 			</div>
-			<div class="sidebar">
-				{{>draft_sidebar}}
-			</div>
-			<div style="clear:both;"></div>	
-		{{else}}
-			{{#if admin}}
+		{{/if}}
+		{{>players_view}}
+		<div class="sidebar">
+			{{#if order_set}}
+				{{>draft_order}}
 			{{else}}
+				Draft order hasn't been set yet.
 			{{/if}}
-		{{/if}}	
+		</div>
+
+		
+		<div style="clear:both;"></div>
 	</div>
 </template>
 
+<template name="draft_order">
+	<h3>Draft Order</h3>
+	<ol>
+		{{#each user}}
+			<li>{{this.profile.firstName}} {{this.profile.lastName}}</li>
+		{{/each}}
+	</ol>
+</template>
+
+
+<template name="players_view">
+	<div class="available_players">
+		<h2>Available Players <input class="player_search" type="text" value="{{searchValue}}" placeholder="Search first or last name"/></h2>
+		{{>position_filter}}
+		{{>players}}
+	</div>
+</template>
 
 <template name="player_row">
 <tr class="player_row">
-	<td class="draft_button_cell"><div class="draft_button {{#if isUserPick}}active{{/if}}">Draft</div></td>
+	{{#if draft_begun}}<td class="draft_button_cell"><div class="draft_button {{#if isUserPick}}active{{/if}}">Draft</div></td>{{/if}}
 	<td class="player_name">{{this.firstName}} {{this.lastName}}</td>
 	<td class="player_position">{{position}}</td>
 	<td class="player_pro_team">{{pro_team}}</td>
@@ -54,7 +80,7 @@
 <table class="players_table">
 	<thead>
 		<tr>
-			<th></th>
+			{{#if draft_begun}}<th></th>{{/if}}
 			<th>Name</th>
 			<th>Position</th>
 			<th>Pro Team</th>
@@ -62,14 +88,18 @@
 		</tr>
 	</thead>
 	<tbody>
-		{{#if no_players}}
-			<tr class="empty_row">
-				<td colspan="5">No players meet your criteria</td>
-			</tr>
+		{{#if players_ready}}
+			{{#if no_players}}
+				<tr class="empty_row">
+					<td colspan="5">No players meet your criteria</td>
+				</tr>
+			{{else}}
+				{{#each player}}
+					{{>player_row}}
+				{{/each}}
+			{{/if}}	
 		{{else}}
-			{{#each player}}
-				{{>player_row}}
-			{{/each}}
+			<tr><td colspan="5">Loading...</td></tr>
 		{{/if}}
 	</tbody>
 </table>

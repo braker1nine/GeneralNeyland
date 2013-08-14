@@ -1,6 +1,5 @@
 Drafts = new Meteor.Collection('drafts');
 Picks = new Meteor.Collection('picks');
-DraftChatMessages = new Meteor.Collection('draftChatMessages');
 
 // Draft Constants
 var PICKS_PER_ROUND = 12,
@@ -17,18 +16,17 @@ draftId
 
 */
 // Publish the draft model
-/*if (Meteor.isServer) {
+if (Meteor.isServer) {
 	Meteor.publish('picks', function(draftId) {
-
+		return Picks.find({draft_id:draftId});
 	});
 
 	Meteor.publish('drafts', function() {
-
+		return Drafts.find();
 	});
 } else if (Meteor.isClient) {
-	draftHandle = Meteor.subscribe('drafts');
-	pickHandle = Meteor.subscribe('picks');
-}*/
+	
+}
 
 
 
@@ -39,7 +37,6 @@ year
 order - array of userIds
 teams
 leagueId
-isTest
 
 */
 
@@ -47,15 +44,26 @@ isTest
 /* DRAFT CONSTANTS */
 if (Meteor.isServer) {
 
-}
-
 Meteor.methods({
 
 	/*
 		Params is an object with draft positions keyed on user id or username
 	*/
-	setDraftOrder: function(params) {
+	setDraftOrder: function() {
+		if (Meteor.user() && Meteor.user().username == 'chrisbrakebill') {
+			var shuffled_owners = _.shuffle(_.map(Meteor.users.find().fetch(), function(user) {
+				return ((user && user.profile) ? user.profile.id : -1);
+			}));
 
+			for (var i = 0; i < shuffled_owners.length; i++) {
+				Meteor.users.update({'profile.id':shuffled_owners[i]}, {$set: {'profile.draft_slot':(i+1)}});
+			};
+
+			return shuffled_owners;
+
+		} else {
+			return new Meteor.Error(403, 'NO WAY JOSE');
+		}
 
 	},
 
@@ -63,12 +71,12 @@ Meteor.methods({
 		var new_draft = {};
 		new_draft.year = new Date().getYear();
 
-		// Grab the owner ids and shuffle them
-		var shuffled_owners = _.shuffle(_.map(Meteor.users.find().fetch(), function(user) {
-			return ((user && user.profile) ? user.profile.id : -1);
-		}));
-		new_draft.order = shuffled_owners;
+		//Drafts.remove({year:new_draft.year});
 
+		// Grab the owner ids and shuffle them
+		
+		new_draft.order = _.map(Meteor.users.find({}, {sort:{'profile.draft_slot':1}}).fetch(), function(user){ return user.profile.id});
+		console.log(new_draft.order);
 		new_draft.isMock = (isMock == true);
 		var id = Drafts.insert(new_draft);
 		
@@ -92,6 +100,8 @@ Meteor.methods({
 				}
 			}
 
+			return id;
+
 		} else {
 			return null;
 		}
@@ -100,7 +110,7 @@ Meteor.methods({
 	beginDraft: function(draft_id) {
 		var draft = Drafts.findOne(draft_id);
 		if (draft) {
-			Draft.update(draft_id, {
+			Drafts.update(draft_id, {
 				$set: {
 					current_pick: 1,
 				}
@@ -113,6 +123,8 @@ Meteor.methods({
 	makePick: function(draft_id, player_id) {
 		var draft = Drafts.findOne(draft_id);
 		if (draft) {
+			console.log(draft);
+			console.log('draft_id: ' + draft_id + ', current_pick: ' + draft.current_pick);
 			var current_pick = Picks.findOne({
 				draft_id:draft_id,
 				overall: draft.current_pick
@@ -120,10 +132,14 @@ Meteor.methods({
 
 			if (current_pick) {
 				
-				if (this.userId == current_pick.owner) {
+				if (this.userId == current_pick.owner || (Meteor.user() && Meteor.user().username == 'chrisbrakebill')) {
 					var player = Players.findOne(player_id);
 
 					if (player) {
+						if (player.owner) {
+							return new Meteor.Error(400, 'Player was already selected.');
+						}
+
 						Picks.update({
 							draft_id:draft_id,
 							overall: draft.current_pick
@@ -133,11 +149,15 @@ Meteor.methods({
 							}
 						});
 
+						Players.update(player_id, {$set: {owner:current_pick.owner}});
+
 						Drafts.update(draft_id, {
 							$inc: {
-								overall:1
+								current_pick:1
 							}
 						})
+						var owner = Meteor.users.findOne({'profile.id':current_pick.owner});
+						console.log(owner.username + ' picked ' + player.firstName + ' ' + player.lastName);
 					} else {
 						return new Meteor.Error(404, 'Player not found.');
 					}
@@ -163,6 +183,27 @@ Meteor.methods({
 	},
 
 	resetDraft: function(id) {
-		
+		var selector = id;
+		Drafts.remove(selector);
+
+		var pick_selector = {draft_id:id};
+		Picks.remove(pick_selector);
+
+		Players.update({}, {
+			$unset: {
+				owner:''
+			}
+		}, {multi:true});
+
+	},
+
+	resetDraftOrder: function() {
+		Meteor.users.update({}, {
+			$unset: {
+				'profile.draft_slot':''
+			}
+		}, {multi:true})
 	}
-})
+});
+
+}

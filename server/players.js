@@ -12,7 +12,7 @@ var slotCatMap = {
 	23:[2,3,4]
 }
 Meteor.publish('players', function(slotCategoryId, name) {
-	var selector = {};
+	var selector = {owner:{$exists:false}};
 
 	var options = {
 		limit:100,
@@ -40,36 +40,42 @@ Meteor.publish('players', function(slotCategoryId, name) {
 })
 
 Meteor.startup(function(){
-	Meteor.http.get('http://games.espn.go.com/ffl/api/v2/playerInit', {}, function(error, result) {
-		if (error) {
+	Meteor.call('get_players');
+})
 
-		} else if (result && result.statusCode <= 302) {
-			if (!result.data) result.data = JSON.parse(result.content);
+Meteor.methods({
+	get_players: function() {
+		Meteor.http.get('http://games.espn.go.com/ffl/api/v2/playerInit', {}, function(error, result) {
+			if (error) {
 
-			var player, playerMap;
-			for (var i = 0; i < result.data.players.length; i++) {
-				player = result.data.players[i];
-				_.defaults(player, result.data.defaults.players);
+			} else if (result && result.statusCode <= 302) {
+				if (!result.data) result.data = JSON.parse(result.content);
 
-				if ((player.dpi > 0 && player.dpi < 6 && !player.tp) || player.dpi == 16) {
+				var player, playerMap;
+				for (var i = 0; i < result.data.players.length; i++) {
+					player = result.data.players[i];
+					_.defaults(player, result.data.defaults.players);
 
-					playerMap = {
-						playerId:player.pi,
-						lastName:player.ln,
-						firstName:player.fn,
-						percentOwned:player.po,
-						defaultPositionId:player.dpi,
-						proTeamId:player.pti,
-						teamPlayer:player.tp
-					}
+					if ((player.dpi > 0 && player.dpi < 6 && !player.tp) || player.dpi == 16) {
 
-					if (Players.find({playerId:player.pi}).count() > 0) {
-						Players.update({playerId:player.pi}, playerMap);
-					} else {
-						Players.insert(playerMap);
+						playerMap = {
+							playerId:player.pi,
+							lastName:player.ln,
+							firstName:player.fn,
+							percentOwned:player.po,
+							defaultPositionId:player.dpi,
+							proTeamId:player.pti,
+							teamPlayer:player.tp
+						}
+
+						if (Players.find({playerId:player.pi}).count() > 0) {
+							Players.update({playerId:player.pi}, playerMap);
+						} else {
+							Players.insert(playerMap);
+						}
 					}
 				}
 			}
-		}
-	});
+		});
+	}
 })
