@@ -131,8 +131,9 @@ Meteor.methods({
 			});
 
 			if (current_pick) {
-				
-				if (this.userId == current_pick.owner || (Meteor.user() && Meteor.user().username == 'chrisbrakebill')) {
+				console.log('Making pick for pick');
+				var pick_owner = Meteor.users.findOne({'profile.id':current_pick.owner});
+				if (this.userId == pick_owner._id || (Meteor.user() && Meteor.user().username == 'chrisbrakebill')) {
 					var player = Players.findOne(player_id);
 
 					if (player) {
@@ -180,6 +181,21 @@ Meteor.methods({
 
 	mockDraft: function () {
 		
+	},
+
+	undo_pick: function() {
+		var draft = Drafts.findOne();
+
+		var pick_selector = {
+			draft_id:draft._id,
+			overall:draft.current_pick-1
+		};
+
+		var lastPick = Picks.findOne(pick_selector);
+
+		Picks.update(pick_selector, {$unset: {player_id:''}});
+		Players.update(lastPick.player_id, {$unset:{owner:''}});
+		Drafts.update(draft._id, {$inc: {current_pick:-1}});
 	},
 
 	resetDraft: function(id) {

@@ -9,15 +9,107 @@
 	background-color: rgb(235, 94, 94);
 }
 
+select {
+	float: right;
+}
+
+table {
+	width:100%;
+	text-align: left;
+}
+
+.upcoming_picks h4 {
+	margin-bottom:0;
+}
+
 .admin_tools h4 {
 	margin:10px 0;
 }
 
-.draft .available_players {
+.draft .main_view {
 	width:80%;
 	float: left;
 	padding: 10px 16px;
 	border-right: 1px solid @lightgrey;
+}
+
+.draft_nav {
+	list-style: none;
+	background-color: @lightgrey;
+	color:@darkGrey;
+	padding:10px;
+	border-radius: 3px;
+
+	li {
+		display: inline-block;
+		margin:0 6px;
+		padding:4px 8px;
+		border-radius: 2px;
+		border:1px solid @lightgrey - #111;
+		background-color: @lightgrey + #080808;
+		-webkit-transition:all 250ms ease-in-out;
+		transition:all 250ms ease-in-out;
+
+
+		&:hover {
+			background-color: @lightgrey + #111;
+		}
+
+		&.active {
+			background-color: @white;
+		}
+	}
+}
+
+.round_nav {
+	list-style: none;
+
+	li {
+		display: inline-block;
+		padding:4px 8px;
+		margin: 0 4px;
+		cursor: pointer;
+		border-radius: 2px;
+		-webkit-transition:all 250ms ease-in-out;
+		transition:all 250ms ease-in-out;
+
+		&.active {
+			background-color: @darkGrey;
+			color:@white;
+			&:hover{
+				background-color: @darkGrey + #111;
+			}
+		}
+
+		&:hover {
+			background-color: @lightgrey;
+		}
+	}
+}
+
+table.draft_results {
+	width: 100%;
+	border-collapse: collapse;
+
+	tr:not(:last-child) {
+		border-bottom: 1px solid @lightgrey;
+	}
+
+	td {
+		padding: 4px 0;
+	}
+
+	.overall {
+		font-size: 0.7em
+	}
+
+	.pro_team {
+		margin-left: 1em;
+	}
+}
+
+.draft .available_players {
+	
 }
 
 .draft_button {

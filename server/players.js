@@ -37,7 +37,11 @@ Meteor.publish('players', function(slotCategoryId, name) {
 
 
 	return Players.find(selector, options);
-})
+});
+
+Meteor.publish('drafted_players', function() {
+	return Players.find({owner:{$exists:true}});
+});
 
 Meteor.startup(function(){
 	Meteor.call('get_players');
@@ -69,7 +73,7 @@ Meteor.methods({
 						}
 
 						if (Players.find({playerId:player.pi}).count() > 0) {
-							Players.update({playerId:player.pi}, playerMap);
+							Players.update({playerId:player.pi}, {$set: playerMap});
 						} else {
 							Players.insert(playerMap);
 						}
