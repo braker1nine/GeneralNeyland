@@ -3,7 +3,7 @@ Picks = new Meteor.Collection('picks');
 
 // Draft Constants
 var PICKS_PER_ROUND = 12,
-	ROUNDS = 15;
+	ROUNDS = 14;
 
 /* 
 

@@ -8,7 +8,7 @@ Drafts = new Meteor.Collection('drafts');
 Picks = new Meteor.Collection('picks');
 
 var PICKS_PER_ROUND = 12,
-	ROUNDS = 15; /// Need to make sure this is right?
+	ROUNDS = 14; /// Need to make sure this is right?
 
 var players_handle;
 Deps.autorun(function() {
