@@ -39,7 +39,16 @@ teams
 leagueId
 
 */
-
+Drafts.allow({
+	update:function(userId, doc, fieldNames, modifier) {
+		var user = !userId || Meteor.users.findOne(userId);
+		if (user && user.username == 'chrisbrakebill') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+})
 
 /* DRAFT CONSTANTS */
 if (Meteor.isServer) {
