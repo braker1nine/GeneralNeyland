@@ -1,5 +1,6 @@
 if (Meteor.isClient){
 	Meteor.startup(function() {
+		var view_handle;
 
 		var Workspace = Backbone.Router.extend({
 			routes: {
@@ -8,11 +9,13 @@ if (Meteor.isClient){
 				"draft/":"draft",
 				"history/":"history",
 				"account/":"account",
+				"dues/":"dues",
 				"*notFound":"notFound"
 			},
 
 			home: function() {
-				Deps.autorun(function() {
+				!view_handle || view_handle.stop();
+				view_handle = Deps.autorun(function() {
 					if (Meteor.user()) {
 						Session.set("page", "home");
 					} else {
@@ -22,7 +25,8 @@ if (Meteor.isClient){
 			},
 
 			post: function(post_id) {
-				Deps.autorun(function() {
+				!view_handle || view_handle.stop();
+				view_handle = Deps.autorun(function() {
 					if (Meteor.user()) {
 						Session.set("page", "post");
 						Session.set("viewing_post", post_id);
@@ -43,7 +47,8 @@ if (Meteor.isClient){
 			},
 
 			draft: function() {
-				Deps.autorun(function() {
+				!view_handle || view_handle.stop();
+				view_handle = Deps.autorun(function() {
 					if (Meteor.user()) {
 						Session.set("page","draft");
 					} else {
@@ -53,7 +58,8 @@ if (Meteor.isClient){
 			},
 
 			history: function() {
-				Deps.autorun(function() {
+				!view_handle || view_handle.stop();
+				view_handle = Deps.autorun(function() {
 					if(Meteor.user()) {
 						Session.set("page", "history");
 					} else {
@@ -63,13 +69,25 @@ if (Meteor.isClient){
 			},
 
 			account: function() {
-				Deps.autorun(function() {
+				!view_handle || view_handle.stop();
+				view_handle = Deps.autorun(function() {
 					if(Meteor.user()) {
 						Session.set("page", "account");
 					} else {
 						Session.set("page", "login");
 					}
 				});
+			},
+
+			dues: function() {
+				!view_handle || view_handle.stop();
+				view_handle = Deps.autorun(function() {
+					if(Meteor.user()) {
+						Session.set("page", "dues");
+					} else {
+						Session.set("page", "login");
+					}
+				})
 			},
 
 			notFound:function(path) {

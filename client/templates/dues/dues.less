@@ -1,0 +1,62 @@
+@import "../../variables";
+
+
+.dues table {
+	margin: 2em 0;
+}
+
+.dues_table {
+	table-layout: fixed;
+}
+
+th.dues,
+td.dues,
+td.prize {
+	width:130px;
+	text-align: center;
+}
+
+.dues thead tr {
+	border-bottom: 1px solid @darkGrey;
+}
+
+.dues h2 {
+
+	padding-bottom: 6px;
+	border-bottom: 2px solid @darkGrey;
+
+	.dues_owed {
+		float:right;
+
+		.value {
+			display: inline-block;
+			padding: 2px 6px;
+			background-color: #CCC;
+			border-radius: 3px;
+		}
+	}
+}
+
+
+.status {
+	display: inline-block;
+	margin:4px 0;
+	color:@white;
+	width:120px;
+	text-align: center;
+	background-color: @red;
+	.threeD(@red);
+	&::before {
+		content:'NO';
+	}
+
+	&.paid {
+		color:@white!important;
+		background-color: @green;
+		.threeDPushed(@green);
+
+		&::before {
+			content:'YES';
+		}
+	}
+}

@@ -1,0 +1,42 @@
+<template name="dues">
+	<div class="dues body">
+
+		<h2>
+			<div class="dues_owed">
+				Dues Owed: <span class="value">$40</span>
+			</div>
+			League Dues
+		</h2>
+		<table class="prize_money">
+			<tbody>
+				<thead>
+					<tr><th colspan="2">Prize Money</th></tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="place">1st Place</td>
+						<td class="prize">${{prize 1}}</td>
+					</tr>
+					<tr>
+						<td class="place">2nd Place</td>
+						<td class="prize">${{prize 2}}</td>
+					</tr>
+					<tr>
+						<td class="place">3rd Place</td>
+						<td class="prize">${{prize 3}}</td>
+					</tr>
+				</tbody>
+		</table>
+		<table class="dues_table">
+			<thead>
+				<tr><th class="owner">Owner</th><th class="dues">Dues Paid</th></tr>
+			</thead>
+			<tbody>
+				{{#each owner}}
+					<tr><td class="owner">{{this.profile.firstName}}</td><td class="dues"><div class="status {{#if paid}}paid{{/if}}"></div></td></tr>
+				{{/each}}
+			</tbody>
+		</table>
+
+	</div>
+</template>
