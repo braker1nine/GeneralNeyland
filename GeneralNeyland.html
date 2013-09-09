@@ -61,10 +61,11 @@
 <nav class="span11 offset1">
 	{{#if currentUser}}
  	<ul class="inline">
- 		<li class="navItem"><a href="/">Home</a></li>
- 		<li class="navItem"><a href="/draft/">Draft</a></li>
- 		<li class="navItem"><a href="/history/">Hall of Records</a></li>
- 		<li class="navItem"><a href="/account/">Account</a></li>
+ 		<li class="navItem {{#if pageIs 'home'}}active{{/if}}"><a href="/">Home</a></li>
+ 		<li class="navItem {{#if pageIs 'draft'}}active{{/if}}"><a href="/draft/">Draft</a></li>
+ 		<li class="navItem {{#if pageIs 'history'}}active{{/if}}"><a href="/history/">Hall of Records</a></li>
+ 		<li class="navItem {{#if pageIs 'dues'}}active{{/if}}"><a href="/dues/">Dues</a></li>
+ 		<li class="navItem {{#if pageIs 'account'}}active{{/if}}"><a href="/account/">Account</a></li>
  	</ul>
  	{{/if}}
 </nav>

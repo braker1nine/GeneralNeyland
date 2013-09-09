@@ -20,6 +20,12 @@ if (Meteor.isClient) {
     return Meteor.users.findOne(Session.get('viewingUser'));
   }
 
+
+  Template.nav.helpers({
+    pageIs: function(page) {
+      return Session.equals("page", page);
+    }
+  });
   Template.nav.events({
     'click li.navItem a':function(e) {
       e.preventDefault();
