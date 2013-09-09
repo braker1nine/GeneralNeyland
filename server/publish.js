@@ -220,6 +220,34 @@ Meteor.methods({
 	mostLikedUser: function() {
 
 	}
+});
+
+
+/* ---------------------- #Dues Methods -------------- */
+Meteor.methods({
+	toggle_dues: function(_id, val) {
+		if (Meteor.user() && Meteor.user().username == 'chrisbrakebill') {
+			Meteor.users.update(_id, {$set: {
+				'profile.dues_paid':val
+			}});
+
+			if (val == true) {
+				var payer = Meteor.users.findOne(_id);
+				var emails = Meteor.users.find({}, {fields:{
+					emails:1
+				}}).fetch();
+				emails = _.map(emails, function(user) {
+					return user.emails[0].address
+				});
+				
+				sendEmailNotification({
+					to:emails,
+					from:'dues@generalneylandscup.com',
+					body:payer.profile.firstName + ' has paid his league dues.'
+				});
+			}
+		}
+	}
 })
 
 
