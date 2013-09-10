@@ -42,6 +42,9 @@ Meteor.startup(function() {
 		if (draftHandle.ready()) {
 			draft = Drafts.findOne();
 			Session.set('draft', draft);
+			if (draft.complete == true && Session.equals('main_view', 'players')) {
+				Session.set('main_view', 'results');
+			}
 		}
 	});
 
@@ -161,264 +164,198 @@ var proTeams = {
 			"id": 0,
 			"location": " ",
 			"name": "FA",
-			"tickerAbbrev": "fa",
-			"universeId": 0
 		},
 		"1": {
 			"abbrev": "Atl",
 			"id": 1,
 			"location": "Atlanta",
 			"name": "Falcons",
-			"tickerAbbrev": "atl",
-			"universeId": 2
 		},
 		"2": {
 			"abbrev": "Buf",
 			"id": 2,
 			"location": "Buffalo",
 			"name": "Bills",
-			"tickerAbbrev": "buf",
-			"universeId": 1
 		},
 		"3": {
 			"abbrev": "Chi",
 			"id": 3,
 			"location": "Chicago",
 			"name": "Bears",
-			"tickerAbbrev": "chi",
-			"universeId": 2
 		},
 		"4": {
 			"abbrev": "Cin",
 			"id": 4,
 			"location": "Cincinnati",
 			"name": "Bengals",
-			"tickerAbbrev": "cin",
-			"universeId": 1
 		},
 		"5": {
 			"abbrev": "Cle",
 			"id": 5,
 			"location": "Cleveland",
 			"name": "Browns",
-			"tickerAbbrev": "cle",
-			"universeId": 1
 		},
 		"6": {
 			"abbrev": "Dal",
 			"id": 6,
 			"location": "Dallas",
 			"name": "Cowboys",
-			"tickerAbbrev": "dal",
-			"universeId": 2
 		},
 		"7": {
 			"abbrev": "Den",
 			"id": 7,
 			"location": "Denver",
 			"name": "Broncos",
-			"tickerAbbrev": "den",
-			"universeId": 1
 		},
 		"8": {
 			"abbrev": "Det",
 			"id": 8,
 			"location": "Detroit",
 			"name": "Lions",
-			"tickerAbbrev": "det",
-			"universeId": 2
 		},
 		"9": {
 			"abbrev": "GB",
 			"id": 9,
 			"location": "Green Bay",
 			"name": "Packers",
-			"tickerAbbrev": "gnb",
-			"universeId": 2
 		},
 		"10": {
 			"abbrev": "Ten",
 			"id": 10,
 			"location": "Tennessee",
 			"name": "Titans",
-			"tickerAbbrev": "ten",
-			"universeId": 1
 		},
 		"11": {
 			"abbrev": "Ind",
 			"id": 11,
 			"location": "Indianapolis",
 			"name": "Colts",
-			"tickerAbbrev": "ind",
-			"universeId": 1
 		},
 		"12": {
 			"abbrev": "KC",
 			"id": 12,
 			"location": "Kansas City",
 			"name": "Chiefs",
-			"tickerAbbrev": "kan",
-			"universeId": 1
 		},
 		"13": {
 			"abbrev": "Oak",
 			"id": 13,
 			"location": "Oakland",
 			"name": "Raiders",
-			"tickerAbbrev": "oak",
-			"universeId": 1
 		},
 		"14": {
 			"abbrev": "StL",
 			"id": 14,
 			"location": "St. Louis",
 			"name": "Rams",
-			"tickerAbbrev": "stl",
-			"universeId": 2
 		},
 		"15": {
 			"abbrev": "Mia",
 			"id": 15,
 			"location": "Miami",
 			"name": "Dolphins",
-			"tickerAbbrev": "mia",
-			"universeId": 1
 		},
 		"16": {
 			"abbrev": "Min",
 			"id": 16,
 			"location": "Minnesota",
 			"name": "Vikings",
-			"tickerAbbrev": "min",
-			"universeId": 2
 		},
 		"17": {
 			"abbrev": "NE",
 			"id": 17,
 			"location": "New England",
 			"name": "Patriots",
-			"tickerAbbrev": "nwe",
-			"universeId": 1
 		},
 		"18": {
 			"abbrev": "NO",
 			"id": 18,
 			"location": "New Orleans",
 			"name": "Saints",
-			"tickerAbbrev": "nor",
-			"universeId": 2
 		},
 		"19": {
 			"abbrev": "NYG",
 			"id": 19,
 			"location": "New York",
 			"name": "Giants",
-			"tickerAbbrev": "nyg",
-			"universeId": 2
 		},
 		"20": {
 			"abbrev": "NYJ",
 			"id": 20,
 			"location": "New York",
 			"name": "Jets",
-			"tickerAbbrev": "nyj",
-			"universeId": 1
 		},
 		"21": {
 			"abbrev": "Phi",
 			"id": 21,
 			"location": "Philadelphia",
 			"name": "Eagles",
-			"tickerAbbrev": "phi",
-			"universeId": 2
 		},
 		"22": {
 			"abbrev": "Ari",
 			"id": 22,
 			"location": "Arizona",
 			"name": "Cardinals",
-			"tickerAbbrev": "ari",
-			"universeId": 2
 		},
 		"23": {
 			"abbrev": "Pit",
 			"id": 23,
 			"location": "Pittsburgh",
 			"name": "Steelers",
-			"tickerAbbrev": "pit",
-			"universeId": 1
 		},
 		"24": {
 			"abbrev": "SD",
 			"id": 24,
 			"location": "San Diego",
 			"name": "Chargers",
-			"tickerAbbrev": "sdg",
-			"universeId": 1
 		},
 		"25": {
 			"abbrev": "SF",
 			"id": 25,
 			"location": "San Francisco",
 			"name": "49ers",
-			"tickerAbbrev": "sfo",
-			"universeId": 2
 		},
 		"26": {
 			"abbrev": "Sea",
 			"id": 26,
 			"location": "Seattle",
 			"name": "Seahawks",
-			"tickerAbbrev": "sea",
-			"universeId": 2
 		},
 		"27": {
 			"abbrev": "TB",
 			"id": 27,
 			"location": "Tampa Bay",
 			"name": "Buccaneers",
-			"tickerAbbrev": "tam",
-			"universeId": 2
 		},
 		"28": {
 			"abbrev": "Wsh",
 			"id": 28,
 			"location": "Washington",
 			"name": "Redskins",
-			"tickerAbbrev": "was",
-			"universeId": 2
 		},
 		"29": {
 			"abbrev": "Car",
 			"id": 29,
 			"location": "Carolina",
 			"name": "Panthers",
-			"tickerAbbrev": "car",
-			"universeId": 2
 		},
 		"30": {
 			"abbrev": "Jac",
 			"id": 30,
 			"location": "Jacksonville",
 			"name": "Jaguars",
-			"tickerAbbrev": "jac",
-			"universeId": 1
 		},
 		"33": {
 			"abbrev": "Bal",
 			"id": 33,
 			"location": "Baltimore",
 			"name": "Ravens",
-			"tickerAbbrev": "bal",
-			"universeId": 1
 		},
 		"34": {
 			"abbrev": "Hou",
 			"id": 34,
 			"location": "Houston",
 			"name": "Texans",
-			"tickerAbbrev": "hou",
-			"universeId": 1
 		}
 	}
 
@@ -475,6 +412,11 @@ Template.draft.events({
 			console.log(arguments);
 		});
 	},
+	'click button.complete_draft':function() {
+		Meteor.update(Session.get('draft')._id, {$set: {
+			complete:true
+		}});
+	},
 	'click ul.draft_nav li':function(e) {
 		Session.set('main_view', e.target.dataset.view);
 	}
@@ -484,6 +426,10 @@ _.extend(Template.draft, {
 	draft_begun: function() {
 		var draft = Session.get('draft');
 		return draft && draft.current_pick > 0;
+	},
+	draft_complete:function() {
+		var draft = Session.get('draft');
+		return draft && draft.complete == true;
 	},
 	draft_created: function() {
 		return Drafts.find().count() > 0;
@@ -678,7 +624,6 @@ _.extend(Template.owner_dropdown, {
 		return Meteor.users.find();
 	},
 	selected: function() {
-		debugger;
 		return Session.equals('roster_user', this.profile.id + '');
 	}
 });

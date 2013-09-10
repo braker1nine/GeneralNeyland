@@ -11,12 +11,13 @@
 				<button class="reset_draft" {{#unless draft_created}}disabled="disabled"{{/unless}}>Reset Draft</button>
 				<button class="reset_draft_order" {{#if draft_created}}disabled="disabled"{{/if}}>Reset Draft Order</button>
 				<button class="undo_pick" {{#unless draft_begun}}disabled="disabled"{{/unless}}>Undo Last Pick</button>
+				<button class="complete_draft" {{#unless draft_begun}}disabled="disabled"{{/unless}}>Complete Draft</button>
 				<button class="refresh_players">Refresh Players</button>
 			</div>
 		{{/if}}
 		<div class="main_view">
 			<ul class="draft_nav">
-				<li data-view="players" class="{{#if is_active_view 'players'}}active{{/if}}">Available Players</li>
+				{{#unless draft_complete}}<li data-view="players" class="{{#if is_active_view 'players'}}active{{/if}}">Available Players</li>{{/unless}}
 				{{#if draft_created}}<li data-view="results" class="{{#if is_active_view 'results'}}active{{/if}}">Results</li>{{/if}}
 				{{#if draft_begun}}<li data-view="rosters" class="{{#if is_active_view 'rosters'}}active{{/if}}">Roster</li>{{/if}}
 			</ul>
