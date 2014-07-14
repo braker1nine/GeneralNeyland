@@ -1,71 +1,108 @@
 
-function deParam(string) {
-    var obj = {};
-    var entries = string.split('&');
-    for (var i=0; i < entries.length; i++) {
-      entries[i] = entries[i].split('=');
-      obj[entries[i][0]] = entries[i][1];
-    }
+function checkAuthFunction(func, error) {
+  return function() {
+	if (checkAuth()) {
+		func.apply(this, arguments);
+	} else {
+		error = error || 'You must be an admin to do that.';
+		console.log(error)
+	}
+  }
+}
 
-    return obj;
+function checkAuth() {
+  if (GN.isAdmin()) {
+	return true;
+  } else {
+	// Log or notify
+	return false;
+  }
+}
+
+// This is a General (haha, hilarious) controller for doing stuff...
+GN = {
+	isAdmin: function() {
+		return Meteor.user() && Meteor.user().username == 'chrisbrakebill';
+	},
+	reset_dues: checkAuthFunction(function(callback) {
+		Meteor.call('reset_dues', callback);
+	})
+
+}
+
+UI.registerHelper('admin', function() {
+	return GN.isAdmin();
+});
+
+
+
+function deParam(string) {
+	var obj = {};
+	var entries = string.split('&');
+	for (var i=0; i < entries.length; i++) {
+	  entries[i] = entries[i].split('=');
+	  obj[entries[i][0]] = entries[i][1];
+	}
+
+	return obj;
   };
 
 if (Meteor.isClient) {
 
   Template.body.pageIs = function(page) {
-    return Session.equals("page", page);
+	return Session.equals("page", page);
   }
 
   Template.body.user = function() {
-    return Meteor.users.findOne(Session.get('viewingUser'));
+	return Meteor.users.findOne(Session.get('viewingUser'));
   }
 
 
   Template.nav.helpers({
-    pageIs: function(page) {
-      return Session.equals("page", page);
-    }
+	pageIs: function(page) {
+	  return Session.equals("page", page);
+	}
   });
   Template.nav.events({
-    'click li.navItem a':function(e) {
-      e.preventDefault();
-      var url = $(e.target).attr('href');
-      if (url != '#') {
-        Router.navigate($(e.target).attr('href'), {trigger:true});
-      }
-    }
+	'click li.navItem a':function(e) {
+	  e.preventDefault();
+	  var url = $(e.target).attr('href');
+	  if (url != '#') {
+		Router.navigate($(e.target).attr('href'), {trigger:true});
+	  }
+	}
   })
 
   Template.teamsDropdown.owners = function() {
-    return Meteor.users.find().fetch();
+	return Meteor.users.find().fetch();
   }
 
   Template.loginForm.events({
-    'click input[type="button"]':function(e) {
-      Meteor.loginWithPassword($(e.target).siblings('input[type="email"]').val(), $(e.target).siblings('input[type="password"]').val(), function(err) {
-        Router.navigate('/', {trigger:true});
-        Session.set('page', 'home');
-      });
-    },
-    'click #facebookButton':function(e){
+	'click input[type="button"]':function(e) {
+	  Meteor.loginWithPassword($(e.target).siblings('input[type="email"]').val(), $(e.target).siblings('input[type="password"]').val(), function(err) {
+		Router.navigate('/', {trigger:true});
+		Session.set('page', 'home');
+	  });
+	},
+	'click #facebookButton':function(e){
 
-    },
+	},
 
-    'click #yahooButton':function(e){
-      Meteor.call('getRequestToken', function(error, result){
-        console.log(result);
-        var requestTokenData = deParam(result.content);
-        for (var key in requestTokenData) {
-          localStorage[key] = requestTokenData[key];
-        }
-        window.location.href = decodeURIComponent(requestTokenData['xoauth_request_auth_url']);
-      });
-    }
+	'click #yahooButton':function(e){
+	  Meteor.call('getRequestToken', function(error, result){
+		console.log(result);
+		var requestTokenData = deParam(result.content);
+		for (var key in requestTokenData) {
+		  localStorage[key] = requestTokenData[key];
+		}
+		window.location.href = decodeURIComponent(requestTokenData['xoauth_request_auth_url']);
+	  });
+	}
   })
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    
+	
   });
 }
