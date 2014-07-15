@@ -4,14 +4,14 @@
 		{{#if admin}}
 			<div class="admin_tools">
 				<h4>Admin Tools</h4>
-				<button class="set_order" {{#if draft_created}}disabled="disabled"{{/if}}>Set Draft Order</button>
-				<button class="initialize" {{#if draft_created}}disabled="disabled"{{/if}}>Initialize Draft</button>
-				<button class="begin_draft" {{#unless draft_created}}disabled="disabled"{{/unless}} {{#if draft_begun}}disabled="disabled"{{/if}}>Begin Draft</button>
+				<button class="set_order" disabled="{{#if draft_created}}disabled{{/if}}">Set Draft Order</button>
+				<button class="initialize" disabled="{{#if draft_created}}disabled{{/if}}">Initialize Draft</button>
+				<button class="begin_draft" disabled="{{#unless draft_created}}disabled{{/unless}} {{#if draft_begun}}disabled{{/if}}">Begin Draft</button>
 				<button class="admin_draft_toggle">{{#if admin_draft}}Exit{{else}}Enter{{/if}} Admin Draft Mode</button>
-				<button class="reset_draft" {{#unless draft_created}}disabled="disabled"{{/unless}}>Reset Draft</button>
-				<button class="reset_draft_order" {{#if draft_created}}disabled="disabled"{{/if}}>Reset Draft Order</button>
-				<button class="undo_pick" {{#unless draft_begun}}disabled="disabled"{{/unless}}>Undo Last Pick</button>
-				<button class="complete_draft" {{#unless draft_begun}}disabled="disabled"{{/unless}}>Complete Draft</button>
+				<button class="reset_draft" disabled="{{#unless draft_created}}disabled{{/unless}}">Reset Draft</button>
+				<button class="reset_draft_order" disabled="{{#if draft_created}}disabled{{/if}}">Reset Draft Order</button>
+				<button class="undo_pick" disabled="{{#unless draft_begun}}disabled{{/unless}}">Undo Last Pick</button>
+				<button class="complete_draft" disabled="{{#unless draft_begun}}disabled{{/unless}}">Complete Draft</button>
 				<button class="refresh_players">Refresh Players</button>
 			</div>
 		{{/if}}
@@ -100,7 +100,7 @@
 <template name="owner_dropdown">
 	<select class="owner_dropdown">
 		{{#each user}}
-			<option value="{{this.profile.id}}" {{#if selected}}selected{{/if}}>{{this.profile.firstName}} {{this.profile.lastName}}</option>
+			<option value="{{this.profile.id}}" selected={{selected}}>{{this.profile.firstName}} {{this.profile.lastName}}</option>
 		{{/each}}
 	</select>
 </template>

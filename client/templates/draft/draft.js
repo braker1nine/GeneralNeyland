@@ -437,9 +437,6 @@ _.extend(Template.draft, {
 	searchValue: function() {
 		return Session.get('name_filter');
 	},
-	admin: function() {
-		return Session.equals('is_admin', true);
-	},
 	order_set: function(){
 		return Meteor.user() && Meteor.user().profile.draft_slot != null;
 	},
