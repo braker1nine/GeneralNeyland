@@ -1,6 +1,6 @@
 InvitedUsers = new Meteor.Collection('invitedUsers');
 
-isDev = process.env.ROOT_URL == 'http://localhost:3000';
+isDev = Meteor.absoluteUrl() == 'http://localhost:3000/';
 
 var ownerData = [
 	{
