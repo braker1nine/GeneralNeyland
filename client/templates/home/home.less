@@ -73,41 +73,10 @@ ul.timeline{
 	width:920px; /* total width */
 	position: relative;
 	list-style: none;
-	overflow: hidden; 
 	padding: 0px;
 	margin: 0px;
-
-	li:nth-child(even){
-		float:right;
-		clear:right;
-	}
-	li:nth-child(odd){
-		float:left;
-		clear:left;
-	}
 }
  
 .timeline > li{
-	width: 450px;
-	position: relative;
 	margin: 10px 0;
-}
- 
-.timeline > li:before{
-	border: 7px solid;
-	content: '';
-	display: block;
-	position: absolute;
-}
- 
-.timeline > li:nth-child(even):before{
-	border-color: transparent @lightgrey transparent transparent;
-	right: 100%;
-	top: 10px;
-}
- 
-.timeline > li:nth-child(odd):before{
-	border-color: transparent transparent transparent @lightgrey;
-	left: 100%;
-	top: 10px;
 }

@@ -1,5 +1,5 @@
 <template name="activityEntry">
-<li class="activityEntry media" id="post-{{this._id}}">
+<div class="activityEntry media" id="post-{{this._id}}">
  	<div class="media-body">
 		<h4 class="name media-heading">{{username}}<a class="postTime">{{postTime}}</a></h4>
 		<p>{{#markdown}}{{this.content}}{{/markdown}}</p>
@@ -18,7 +18,7 @@
 			</div>
 		</div>
 	</div>
-</li>
+</div>
 </template>
 
 <template name="comment">

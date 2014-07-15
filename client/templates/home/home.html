@@ -8,19 +8,18 @@
 
 <template name="activityFeed">
 <div class="container">
-<ul class="timeline">
+	<div class="timeline">
 
-<div class="margin"></div>
-<li class="activityEntry">
-<div class="createPost">
-	<textarea></textarea>
-	<a class="button postButton">Post</a>
-</div>
-</li>
-{{#each recentEntries}}
-	{{> activityEntry}}
-{{/each}}
-</ul>
+		<div class="activityEntry">
+			<div class="createPost">
+				<textarea></textarea>
+				<a class="button postButton">Post</a>
+			</div>
+		</div>
+		{{#each recentEntries}}
+			{{> activityEntry}}
+		{{/each}}
+	</div>
 </div>
 </template>
 
