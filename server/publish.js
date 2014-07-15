@@ -10,6 +10,7 @@ function sendEmailNotification(options) {
 	}
 }
 
+var converter = new Showdown.converter();
 
 var defaultOptions = {sort:[["created_at", "desc"]]};
 Posts = new Meteor.Collection('posts');
@@ -30,7 +31,8 @@ Posts.find({}, defaultOptions).observe({
 			});
 			var sender = Meteor.users.findOne({'profile.id':post.authorUserId}) || {profile: {firstName:'Kaiser', lastName:'Sose'}};
 
-			var body = '' + sender.profile.firstName + ' '  + sender.profile.lastName + ' has posted a <a href="' + Meteor.absoluteUrl() + 'post/' + post._id + '/">message</a>.';
+			var body = '' + sender.profile.firstName + ' '  + sender.profile.lastName + ' has posted a <a href="' + Meteor.absoluteUrl() + 'post/' + post._id + '/">message</a>. ';
+				body += '<blockquote style="margin:20px;padding:20px;border-radius:0; background:#EEE;color:#666;">'+converter.makeHtml(post.content)+'</blockquote>'
 			sendEmailNotification({
 				from:(sender.emails && sender.emails.length ? sender.emails[0].address : 'notifications@generalneylandscup.com'),
 				to: emails,
