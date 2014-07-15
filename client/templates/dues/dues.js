@@ -1,4 +1,5 @@
-var dues = 40;
+Session.setDefault('dues', 40);
+
 
 Template.dues.helpers({
 	owner:function() {
@@ -14,6 +15,7 @@ Template.dues.helpers({
 	},
 
 	prize:function(place) {
+		var dues = Session.get('dues')
 		switch(place) {
 			case 1:
 				return dues*9;
