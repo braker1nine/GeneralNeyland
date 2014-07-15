@@ -1,6 +1,11 @@
 function sendEmailNotification(options) {
 	if (isDev) {
-		console.log('Sending emails to', options);
+		console.log('Sending emails', options);
+		Email.send({
+			to:'chris@brakebill.me',
+			from: options.from,
+			html: options.body
+		})
 	} else {
 		Email.send({
 			to:options.to,
