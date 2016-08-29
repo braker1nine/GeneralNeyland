@@ -114,6 +114,7 @@ Meteor.startup(function() {
 				});
 
 				if (id && !isDev) {
+					console.log('Created "' + owner.userName + '", password is "'+password+'"');
 					/*Email.send({
 						from:'chris.brakebill@gmail.com',
 						to:owner.email,
