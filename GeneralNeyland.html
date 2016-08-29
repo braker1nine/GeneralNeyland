@@ -1,60 +1,47 @@
 <head>
   <title>General Neyland's Cup</title>
-  <script type="text/javascript" src="//use.typekit.net/uqq0mtc.js"></script>
-<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
 
 <body>
-{{> body}}
 </body>
 
-<template name="body">
-<div class="wrapper">
- <div class="header">
- 	<h1>General Neyland's Cup</h1>
- </div>
-			{{> nav}}
-	{{#if pageIs "home"}}
-		{{> home}}
-	{{/if}}
-
-	{{#if pageIs "draft"}}
-		{{>draft}}
-	{{/if}}
-
-	{{#if pageIs "history"}}
-		<div class="coming_soon">League history coming soon.</div> 
-	{{/if}}
-
-	{{#if pageIs "user"}}
-	 	{{#with user}}
-	 		{{#if this._id}}
-		 		{{> user}}
-		 	{{/if}}
-		{{/with}}
-	 {{/if}}
-
-
-	{{#if pageIs "post"}}
-		{{>post}}
-	{{/if}}
-
-	 {{#if pageIs "login"}}
-	 	{{>loginForm}}
-	 {{/if}}
-
-	 {{#if pageIs "account"}}
-	 	{{>account}}
-	 {{/if}}
-
-	 {{#if pageIs "dues"}}
-	 	{{>dues}}
-	 {{/if}}
-	 </div>
+<template name="layout">
+	<div class="wrapper">
+		{{> header}}
+		{{#if currentUser}}
+		{{> Template.dynamic template=main}}
+		{{else}}
+			{{#if loggingIn}}
+			{{else}}
+				{{> login}}
+			{{/if}}
+		{{/if}}
+	</div>
 	<footer>
-		{{>footer}}
+		{{> footer}}
 	</footer>
+</template>
 
+<template name="header">
+	<div class="header">
+		<h1>General Neyland's Cup</h1>
+	</div>
+	{{#if currentUser}}
+		{{> nav}}
+	{{else}}
+	{{/if}}
+</template>
+
+<template name="history">
+	<div class="coming_soon">League history coming soon.</div> 
+</template>
+
+<template name="settings">
+	{{#with user}}
+ 		{{#if this._id}}
+	 		{{> user}}
+	 	{{/if}}
+	{{/with}}
 </template>
 
 <template name="nav">
@@ -85,7 +72,7 @@
 	{{/each}}
 </template>
 
-<template name="loginForm">
+<template name="login">
 	<div class="row">
 		<div class="offset3 span6">
 			<form id="loginForm">
@@ -93,6 +80,7 @@
 				<label for="password">Password</label><input type="password"/>
 				<input type="button" value="Login">
 				<div style="clear:both;"></div>
+				<div><a href="#" class="forgotPassword">Forgot Password</a></div>
 			</form>
 		</div>
 	</div>

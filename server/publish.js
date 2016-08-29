@@ -19,9 +19,18 @@ var converter = new Showdown.converter();
 
 var defaultOptions = {sort:[["created_at", "desc"]]};
 Posts = new Meteor.Collection('posts');
-Meteor.publish('posts', function(options) {
+Meteor.publish('current_post', function(post_id, options) {
 	if (!options) options = defaultOptions;
-	return Posts.find({}, options);
+	if (!post_id) return [];
+
+	return Posts.find(post_id, options);
+});
+
+Meteor.publish('recent_posts', function(count) {
+	if (typeof count == 'undefined') { count = 10; }
+	var options = _.clone(defaultOptions);
+	options.limit = count;
+	return Posts.find({}, options)
 });
 
 var initialized = false;
@@ -61,10 +70,6 @@ Posts.allow({
 		return true;
 	}
 })
-
-Meteor.publish('recent_posts', function() {
-
-});
 
 
 /* Post Model
@@ -144,6 +149,7 @@ Meteor.publish('comments', function(post_id) {
 	if (post_id) {
 		selector = {postId:post_id};
 	}
+
 	return Comments.find(selector, {sort:[["created_at", "desc"]]});
 });
 
@@ -246,7 +252,7 @@ Meteor.methods({
 				emails = _.map(emails, function(user) {
 					return user.emails[0].address
 				});
-				
+
 				sendEmailNotification({
 					to:emails,
 					from:'dues@generalneylandscup.com',
@@ -254,15 +260,55 @@ Meteor.methods({
 				});
 			}
 		}
-	}
+	},
+	reset_dues: function() {
+		console.log('resetting dues');
+		Meteor.users.update({}, {$set: {
+			'profile.dues_paid':false
+		}}, {
+			multi:true
+		});
+	},
 })
 
-
+Meteor.users.allow({
+	update:function(userId, doc, fieldNames, modifier) {
+		var user = !userId || Meteor.users.findOne(userId);
+		if (user && user.username == 'chrisbrakebill') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+})
 
 Meteor.publish('users', function(){
 	if (this.userId) {
 		return Meteor.users.find();
 	} else {
 		return [];
+	}
+})
+
+Meteor.methods({
+	update_email: function(email) {
+		if (this.userId) {
+
+			var oldEmail = Meteor.user().emails[0].address;
+
+			Meteor.users.update(this.userId, { $pull: { 'emails': {
+				address: oldEmail
+			}}});
+
+
+			Meteor.users.update(this.userId, { $push: { 'emails': {
+				address: email,
+				verified: false
+			}}});
+
+			return email;
+		} else {
+			return new Meteor.Error(401);
+		}
 	}
 })

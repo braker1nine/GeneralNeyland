@@ -1,111 +1,118 @@
-if (Meteor.isClient){
-	Meteor.startup(function() {
-		var view_handle;
+BlazeLayout.setRoot('body');
+/*FlowRouter.configure({
+	layoutTemplate:'body',
+	onBeforeAction: function(pause) {
+		if (this.ready() && !Meteor.user() && this.route.options.requiresAuth !== false) {
+			this.render('login');
+			pause();
+		}
+	},
+	waitOn: function() {
+		return Meteor.subscribe('users');
+	}
+})*/
 
-		var Workspace = Backbone.Router.extend({
-			routes: {
-				"":"home",
-				"post/:post_id/":"post",
-				"draft/":"draft",
-				"history/":"history",
-				"account/":"account",
-				"dues/":"dues",
-				"*notFound":"notFound"
-			},
+FlowRouter.route('/', {
+	name: 'Home',
+  action: function(params, queryParams) {
+    BlazeLayout.render('layout', {main: 'home'});
+  }
+});
 
-			home: function() {
-				!view_handle || view_handle.stop();
-				view_handle = Deps.autorun(function() {
-					if (Meteor.user()) {
-						Session.set("page", "home");
-					} else {
-						Session.set("page","login");
-					}
-				});
-			},
+FlowRouter.route('/draft', {
+	name: 'Draft',
+	action: function(params, queryParams) {
+		BlazeLayout.render('layout', { main: 'draft' });
+	}
+})
 
-			post: function(post_id) {
-				!view_handle || view_handle.stop();
-				view_handle = Deps.autorun(function() {
-					if (Meteor.user()) {
-						Session.set("page", "post");
-						Session.set("viewing_post", post_id);
-					} else {
-						Session.set("page","login");
-					}
-				});
-			},
+FlowRouter.route('/history', {
+	name: 'History',
+	action: function(params, queryParams) {
+		BlazeLayout.render('layout', { main: 'history' });
+	}
+});
 
-			signup: function(code) {
-				if (Meteor.user() || InvitedUsers.find({inviteCode:code}).count() == 0) {
-					Router.navigate('/', {trigger:true});
-				} else {
-					Session.set("page", "signup");
-					Session.set("signupcode", code);
-					console.log('Signup for code ' + code);
-				}
-			},
+FlowRouter.route('/account', {
+	name: 'Account',
+	action: function(params, queryParams) {
+		BlazeLayout.render('layout', { main: 'account' });
+	}
+});
 
-			draft: function() {
-				!view_handle || view_handle.stop();
-				view_handle = Deps.autorun(function() {
-					if (Meteor.user()) {
-						Session.set("page","draft");
-					} else {
-						Session.set("page","login");
-					}
-				});
-			},
+FlowRouter.route('/dues', {
+	name: 'Dues', 
+	action: function(params, queryParams) {
+		BlazeLayout.render('layout', { main: 'dues' });
+	}
+})
 
-			history: function() {
-				!view_handle || view_handle.stop();
-				view_handle = Deps.autorun(function() {
-					if(Meteor.user()) {
-						Session.set("page", "history");
-					} else {
-						Session.set("page", "login");
-					}
-				});
-			},
+FlowRouter.route('/post/:postId/', {
+	name: 'Post', 
+	action: function(params, queryParams) {
+		BlazeLayout.render('layout', { main: 'post' });
+	}
+})
 
-			account: function() {
-				!view_handle || view_handle.stop();
-				view_handle = Deps.autorun(function() {
-					if(Meteor.user()) {
-						Session.set("page", "account");
-					} else {
-						Session.set("page", "login");
-					}
-				});
-			},
+/*
+this.route('post', {
+	path:'post/:post_id/',
+	data: function() {
+		if (this.ready()) {
+			return Posts.findOne(this.params.post_id);
+		}
+	},
+	waitOn: function() {
+		return [Meteor.subscribe('current_post', this.params.post_id), Meteor.subscribe('comments', this.params.post_id)];
+	}
+});
 
-			dues: function() {
-				!view_handle || view_handle.stop();
-				view_handle = Deps.autorun(function() {
-					if(Meteor.user()) {
-						Session.set("page", "dues");
-					} else {
-						Session.set("page", "login");
-					}
-				})
-			},
 
-			notFound:function(path) {
-				if (Meteor.user()) {
-					Session.set("page","notFound");
-				} else {
-					Session.set("page","login");
-				}
-			}
 
-		});
+FlowRouter.map(function() {
+	this.route('home', {
+		path:'/',
+		onBeforeAction: function() {
+			
+		},
+		waitOn: function() {
+			return [Meteor.subscribe('recent_posts', Session.get('post_count')), Meteor.subscribe('users')]
+		},
 
-		Router = new Workspace;
-		
-		Deps.autorun(function(){
-			if (!Meteor.loggingIn()) {
-				Backbone.history.start({pushState: true}); 
-			}
-		})
 	});
-}
+
+	this.route('draft', {
+		path:'/draft',
+		waitOn: function() {
+			return [Meteor.subscribe('drafts'), Meteor.subscribe('users')];
+		},
+		data: function() {
+		}
+	});
+
+	this.route('history', {
+		path:'/history'
+	});
+
+	this.route('account', {
+		path:'/account',
+	});
+
+	this.route('dues', {
+		path:'/dues'
+	});
+
+	this.route('post', {
+		path:'post/:post_id/',
+		data: function() {
+			if (this.ready()) {
+				return Posts.findOne(this.params.post_id);
+			}
+		},
+		waitOn: function() {
+			return [Meteor.subscribe('current_post', this.params.post_id), Meteor.subscribe('comments', this.params.post_id)];
+		}
+	});
+
+	this.route('signup')
+})*/

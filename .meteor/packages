@@ -17,3 +17,4 @@ standard-minifier-js
 shell-server
 jparker:gravatar
 kadira:flow-router
+kadira:blaze-layout

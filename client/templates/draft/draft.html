@@ -4,15 +4,16 @@
 		{{#if admin}}
 			<div class="admin_tools">
 				<h4>Admin Tools</h4>
-				<button class="set_order" disabled="{{#if draft_created}}disabled{{/if}}">Set Draft Order</button>
-				<button class="initialize" disabled="{{#if draft_created}}disabled{{/if}}">Initialize Draft</button>
-				<button class="begin_draft" disabled="{{#unless draft_created}}disabled{{/unless}} {{#if draft_begun}}disabled{{/if}}">Begin Draft</button>
+				<button class="set_order" {{attributes 'set_order'}}>Set Draft Order</button>
+				<button class="initialize" {{attributes 'initialize'}}>Initialize Draft</button>
+				<button class="begin_draft" {{attributes 'begin_draft'}}>Begin Draft</button>
 				<button class="admin_draft_toggle">{{#if admin_draft}}Exit{{else}}Enter{{/if}} Admin Draft Mode</button>
-				<button class="reset_draft" disabled="{{#unless draft_created}}disabled{{/unless}}">Reset Draft</button>
-				<button class="reset_draft_order" disabled="{{#if draft_created}}disabled{{/if}}">Reset Draft Order</button>
-				<button class="undo_pick" disabled="{{#unless draft_begun}}disabled{{/unless}}">Undo Last Pick</button>
-				<button class="complete_draft" disabled="{{#unless draft_begun}}disabled{{/unless}}">Complete Draft</button>
+				<button class="reset_draft" {{attributes 'reset_draft'}}>Reset Draft</button>
+				<button class="reset_draft_order" {{attributes 'reset_draft_order'}}>Reset Draft Order</button>
+				<button class="undo_pick" {{attributes 'undo_pick'}}>Undo Last Pick</button>
+				<button class="complete_draft" {{attributes 'complete_draft'}}>Complete Draft</button>
 				<button class="refresh_players">Refresh Players</button>
+				<button class="reset_player_owners">Reset Player Owners</button>
 			</div>
 		{{/if}}
 		<div class="main_view">
@@ -43,7 +44,7 @@
 			{{/if}}
 		</div>
 
-		
+
 		<div style="clear:both;"></div>
 	</div>
 </template>
@@ -52,7 +53,7 @@
 	<h3>Draft Order</h3>
 	<ol>
 		{{#each user}}
-			<li>{{this.profile.firstName}} {{this.profile.lastName}}</li>
+			<li>{{this.profile.firstName}} {{this.profile.lastName}}{{#unless draft_created}} <a class="arrow up">↑</a><a class="arrow down">↓</a>{{/unless}}</li>
 		{{/each}}
 	</ol>
 </template>
@@ -129,6 +130,10 @@
 <template name="draft_sidebar">
 	<h3>What's Happening</h3>
 	<div class="upcoming_picks">
+		<h4>Previous Pick</h4>
+			{{#with previous_pick}}
+				{{>pick}}
+			{{/with}}
 		<h4>Current Pick</h4>
 			{{#with current_pick}}
 				{{>pick}}
@@ -149,6 +154,9 @@
 <template name="pick">
 	<div class="pick">
 		{{this.overall}}. {{user}}
+		{{#if playerName}}
+			<div class="pick-player">{{playerName}}</div>
+		{{/if}}
 	</div>
 </template>
 
@@ -181,7 +189,7 @@
 				{{#each player}}
 					{{>player_row}}
 				{{/each}}
-			{{/if}}	
+			{{/if}}
 		{{else}}
 			<tr><td colspan="5">Loading...</td></tr>
 		{{/if}}

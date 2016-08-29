@@ -1,6 +1,13 @@
 if (Meteor.isClient) {
 
 	function printTimeAgo(time) {
+
+		var then = new Date(time);
+		if (then.relative) {
+			console.log('Using relative');
+			return then.relative();
+		}
+
 		var now = new Date();
 		var diff = now.getTime() - time;
 
@@ -32,39 +39,48 @@ if (Meteor.isClient) {
 			return printFunction(val, 'year');
 		}
 	}
-    
-	Template.activityEntry.username = function() {
-		var author = Meteor.users.findOne({'profile.id':this.authorUserId});
-		if (author) {
-			return author.profile.firstName + ' ' + author.profile.lastName
-		} else {
-		    return 'Kaiser Sose';
-		}
-	}
+	Template.activityEntry.helpers({
+		gravatar: function() {
+			var author = Meteor.users.findOne({'profile.id':this.authorUserId});
+			if (author) {
+				var email = author.emails[0].address;
+				return Gravatar.imageUrl(email)
+			}
+		},
 
-	Template.activityEntry.postTime = function() {
-		var postDate = new Date(this.created_at);
-		return printTimeAgo(postDate.getTime());
-		
-	};
+		username: function() {
+			var author = Meteor.users.findOne({'profile.id':this.authorUserId});
+			if (author) {
+				return author.profile.firstName + ' ' + author.profile.lastName
+			} else {
+			    return '';
+			}
+		},
 
-	Template.activityEntry.variable = function(type) {
-		if (this[type] && this[type].length) {
-			return this[type].length;
-		} else {
-			return 0;
-		}
-	}
+		postTime: function() {
+			var postDate = new Date(this.created_at);
+			return postDate.relative();
+			
+		},
 
-	Template.activityEntry.action = function(type) {
-		if (this[type] && this[type].length) {
-			if (this[type].indexOf(Meteor.user().profile.id) >= 0) return "active";
-		}
-	}
+		variable: function(type) {
+			if (this[type] && this[type].length) {
+				return this[type].length;
+			} else {
+				return 0;
+			}
+		},
 
-	Template.activityEntry.comments = function() {
-		return Comments.find({postId:this._id}, {sort:["created_at", "asc"]}).fetch();
-	};
+		action: function(type) {
+			if (this[type] && this[type].length) {
+				if (this[type].indexOf(Meteor.user().profile.id) >= 0) return "active";
+			}
+		},
+
+		comments: function() {
+			return Comments.find({postId:this._id}, {sort:["created_at", "asc"]}).fetch();
+		},
+	})
 
 	Template.activityEntry.events({
 		'click .reactions .button':function(e) {
@@ -94,27 +110,38 @@ if (Meteor.isClient) {
 					content:text,
 					created_at:Date.now()
 				}, function(err, id) {
-					console.log(err);
+					if (err) {
+
+					} else {
+						$(e.target).prev('textarea').val('');
+					}
 				})
 			}
 		},
-		'click .postTime':function() {
-			Router.navigate('/post/' + this._id + '/', true);
+		'click .postTime':function(e) {
+			e.preventDefault();
+			FlowRouter.go('/post/' + this._id + '/');
 		}
 	});
 
-	Template.comment.authorName = function() {
-		var user = Meteor.users.findOne({'profile.id':this.authorUserId});
-		if (user) {
-			return user.profile.firstName + ' ' + user.profile.lastName;
-		} else {
-			return 'Kaiser Sose';
+	Template.comment.helpers({
+		gravatar: function() {
+			var author = Meteor.users.findOne({'profile.id':this.authorUserId});
+			var email = author.emails[0].address;
+			return Gravatar.imageUrl(email)
+		},
+		authorName: function() {
+			var user = Meteor.users.findOne({'profile.id':this.authorUserId});
+			if (user) {
+				return user.profile.firstName + ' ' + user.profile.lastName;
+			} else {
+				return '';
+			}
+		},
+
+		commentTime: function() {
+			return new Date(this.created_at).relative();
 		}
-	};
+	})
 
-	Template.comment.commentTime = function() {
-		return printTimeAgo(this.created_at);
-	}
-
-	Template.comment.preserve(['img.img-polaroid']);
 }

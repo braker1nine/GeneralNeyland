@@ -15,7 +15,7 @@ if (Meteor.isClient) {
 				if (err) {
 					Session.set('errorMessage', err.reason || 'Unknown error');
 				} else {
-					Router.navigate("", {trigger:true});
+					FlowRouter.navigate("", {trigger:true});
 				}
 			});
 		}

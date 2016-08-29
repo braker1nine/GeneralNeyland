@@ -49,60 +49,43 @@ function deParam(string) {
 
 if (Meteor.isClient) {
 
-  Template.body.pageIs = function(page) {
-	return Session.equals("page", page);
-  }
+  Meteor.subscribe('users');
 
-  Template.body.user = function() {
-	return Meteor.users.findOne(Session.get('viewingUser'));
-  }
-
+  Template.layout.helpers({
+    pageIs: function(page) {
+      return Session.equals("page", page);
+    },
+    user: function() {
+      return Meteor.users.findOne(Session.get('viewingUser'));
+    }
+  })
 
   Template.nav.helpers({
-	pageIs: function(page) {
-	  return Session.equals("page", page);
-	}
+  	pageIs: function(page) {
+  	  return Session.equals("page", page);
+  	}
   });
   Template.nav.events({
 	'click li.navItem a':function(e) {
 	  e.preventDefault();
 	  var url = $(e.target).attr('href');
 	  if (url != '#') {
-		Router.navigate($(e.target).attr('href'), {trigger:true});
+  		FlowRouter.go($(e.target).attr('href'));
 	  }
 	}
   })
 
-  Template.teamsDropdown.owners = function() {
-	return Meteor.users.find().fetch();
-  }
-
-  Template.loginForm.events({
-	'click input[type="button"]':function(e) {
-	  Meteor.loginWithPassword($(e.target).siblings('input[type="email"]').val(), $(e.target).siblings('input[type="password"]').val(), function(err) {
-		Router.navigate('/', {trigger:true});
-		Session.set('page', 'home');
-	  });
-	},
-	'click #facebookButton':function(e){
-
-	},
-
-	'click #yahooButton':function(e){
-	  Meteor.call('getRequestToken', function(error, result){
-		console.log(result);
-		var requestTokenData = deParam(result.content);
-		for (var key in requestTokenData) {
-		  localStorage[key] = requestTokenData[key];
-		}
-		window.location.href = decodeURIComponent(requestTokenData['xoauth_request_auth_url']);
-	  });
-	}
+  Template.teamsDropdown.helpers({
+    owners: function() {
+    	return Meteor.users.find().fetch();
+    }
   })
-}
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-	
-  });
+  Template.login.events({
+    'click input[type="button"]':function(e) {
+      Meteor.loginWithPassword($(e.target).siblings('input[type="email"]').val(), $(e.target).siblings('input[type="password"]').val(), function(err) {
+        console.log(err);
+      });
+    },
+  })
 }

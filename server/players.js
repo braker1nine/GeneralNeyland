@@ -47,6 +47,13 @@ Meteor.startup(function(){
 	Meteor.call('get_players');
 })
 
+Players.allow({
+	update: function(userId) {
+		var user = Meteor.users.findOne(userId);
+		return user.username == 'chrisbrakebill';
+	}
+})
+
 Meteor.methods({
 	get_players: function() {
 		Meteor.http.get('http://games.espn.go.com/ffl/api/v2/playerInit', {}, function(error, result) {

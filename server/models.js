@@ -48,7 +48,18 @@ Drafts.allow({
 			return false;
 		}
 	}
-})
+});
+
+Picks.allow({
+	update: function(userId) {
+		var user = !userId || Meteor.users.findOne(userId);
+		if (user && user.username == 'chrisbrakebill') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+});
 
 /* DRAFT CONSTANTS */
 if (Meteor.isServer) {
@@ -80,7 +91,9 @@ Meteor.methods({
 		var new_draft = {};
 		new_draft.year = new Date().getYear();
 
-		//Drafts.remove({year:new_draft.year});
+		if (!isMock) {
+			Drafts.remove({year:new_draft.year, isMock:false});
+		}
 
 		// Grab the owner ids and shuffle them
 		
@@ -192,8 +205,8 @@ Meteor.methods({
 		
 	},
 
-	undo_pick: function() {
-		var draft = Drafts.findOne();
+	undo_pick: function(draft_id) {
+		var draft = Drafts.findOne(draft_id);
 
 		var pick_selector = {
 			draft_id:draft._id,
@@ -228,7 +241,24 @@ Meteor.methods({
 				'profile.draft_slot':''
 			}
 		}, {multi:true})
-	}
+	},
+
+	resetPlayerOwners: function() {
+		Players.update({}, {$unset: {owner:''}});
+	},
+
+	setPlayerForPick: function(player_id, pick_id) {
+		var pick = Picks.findOne(pick_id);
+		var player = Players.findOne(player_id);
+		if (pick && player) {
+			if (pick.player_id) {
+				Players.update(pick.player_id, {$unset: {owner:''}});
+			}
+
+			Picks.update(pick._id, {$set: {player_id: player_id}});
+			Players.update(player._id, {$set: {owner: pick.owner}});
+		}
+	},
 });
 
 }

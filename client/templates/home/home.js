@@ -1,10 +1,5 @@
 if (Meteor.isClient) {
-	
-	Deps.autorun(function(){
-		if (!Meteor.loggingIn()) {
-			UsersHandle = Meteor.subscribe('users');
-		}
-	});
+	Session.setDefault('post_count', 10)
 
 	/*PostsHandle = Meteor.subscribe('posts');
 	PostsCursor = null;
@@ -25,9 +20,14 @@ if (Meteor.isClient) {
 	});*/
 
 
-	Template.activityFeed.recentEntries = function() {
-		return Posts.find({}, {sort:[["created_at", "desc"]]}).fetch();
-	};
+	Template.activityFeed.helpers({
+		recentEntries: function() {
+			return Posts.find({}, {sort:[["created_at", "desc"]], limit:Session.get('post_count')});
+		},
+		morePosts: function() {
+			return Session.equals('post_count', Posts.find({}).count());
+		}
+	})
 
 	Template.activityFeed.events({
 		'click .createPost .postButton': function(e) {
@@ -47,9 +47,13 @@ if (Meteor.isClient) {
 
 					} else {
 						console.log("Created post ", id);
+						$('.createPost textarea').val('');
 					}
 				})
 			}
+		},
+		'click .loadMorePosts': function(e) {
+			Session.set('post_count', Session.get('post_count') + 10);
 		}
 	});
 

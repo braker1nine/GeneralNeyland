@@ -3,78 +3,72 @@ Session.setDefault('name_filter', '');
 Session.setDefault('main_view', 'players');
 Session.setDefault('selected_round', "1");
 Session.setDefault('roster_user', null);
-Session.setDefault('is_admin', false);
-Drafts = new Meteor.Collection('drafts');
+Session.setDefault('admin_pick_mode', false);
+Drafts = new Meteor.Collection('drafts', {
+	transform: function(doc) {
+		return new Draft(doc);
+	}
+});
 Picks = new Meteor.Collection('picks');
 
 var PICKS_PER_ROUND = 12,
 	ROUNDS = 14; /// Need to make sure this is right?
 
 var players_handle;
-Deps.autorun(function() {
-	players_handle = Meteor.subscribe('players', Session.get('position_filter'), Session.get('name_filter'));	
-});
+
+Draft = function(draft) {
+	_.extend(this, draft);
+	return this;
+}
+
+Draft.prototype.hasBegun = function() {
+	return this.current_pick > 0;
+}
+
+Draft.prototype.isComplete = function() {
+	return this.complete == true;
+}
+
+Draft.prototype.getCurrentPick = function() {
+	return Picks.findOne({draft_id:this._id, overall:draft.current_pick});
+}
+
+Draft.prototype.getNextPick = function() {
+	return Picks.findOne({draft_id:this._id, overall:draft.current_pick+1});
+}
+
+Draft.prototype.isUserPick = function(user) {
+
+}
+
+Draft.prototype.select = function(player_id) {
+
+}
 
 Players = new Meteor.Collection('players');
 
-var draft, isAdmin = false
-Meteor.startup(function() {
-	Deps.autorun(function() {
-		drafted_players_handle = Meteor.subscribe('drafted_players');
-	});
+var draft, isAdmin = false, current_draft, picksHandle;
 
-	Deps.autorun(function() {
-		var user = Meteor.user();
-
-		if (user && user.username == 'chrisbrakebill') {
-			Session.set('is_admin', true);
-		} else {
-			Session.set('is_admin', false);
-		}
-	});
-
-	Deps.autorun(function() {
-		draftHandle = Meteor.subscribe('drafts');
-	});
-
-	
-	Deps.autorun(function() {
-		if (draftHandle.ready()) {
-			draft = Drafts.findOne();
-			Session.set('draft', draft);
-			if (draft.complete == true && Session.equals('main_view', 'players')) {
-				Session.set('main_view', 'results');
-			}
-		}
-	});
-
-	var picksHandle;
-	Deps.autorun(function() {
-		var draft = Session.get('draft');
-		if (draftHandle.ready() && draft) {
-			picksHandle = Meteor.subscribe('picks', draft._id);
-		}
-	});
-});
-
-Meteor.startup(function() {
+/*Meteor.startup(function() {
 	var picked_players_loaded = false;
 	Players.find({owner:{$exists:true}}).observe({
 		added:function(doc) {
 			if (picked_players_loaded) {
 				var owner = Meteor.users.findOne({'profile.id':doc.owner});
 				if (owner) {
-					var ownerStr = /*(doc.owner == Meteor.user().profile.id ? 'You' : */owner.profile.firstName + ' ' + owner.profile.lastName;
+					var ownerStr = owner.profile.firstName + ' ' + owner.profile.lastName;
 
 					Alert({text: ownerStr + ' selected ' + doc.firstName + ' ' + doc.lastName + '.'});
 				}
 			}
 		}
-	})
-	picked_players_loaded = true;
-});
+	});
 
-Session.setDefault('admin_pick_mode', false);
+	// This is a hack, but I don't want to notify ON startup
+	setTimeout(function() {
+		picked_players_loaded = true;
+	}, 2000);
+});*/
 
 
 var positionMap = {
@@ -359,7 +353,6 @@ var proTeams = {
 		}
 	}
 
-Template.draft.preserve(['input.player_search']);
 
 var searchT;
 Template.draft.events({
@@ -385,7 +378,7 @@ Template.draft.events({
 		})
 	},
 	'click button.begin_draft':function(e, tmpl) {
-		Meteor.call('beginDraft', Session.get('draft')._id, function(e, r) {
+		Meteor.call('beginDraft', current_draft._id, function(e, r) {
 			console.log(arguments);
 		})
 	},
@@ -393,7 +386,8 @@ Template.draft.events({
 		Session.set('admin_pick_mode', !Session.equals('admin_pick_mode', true));
 	},
 	'click button.reset_draft':function() {
-		Meteor.call('resetDraft', Session.get('draft')._id, function(e,r) {
+		Meteor.call('resetDraft', current_draft._id, function(e,r) {
+			Session.set('main_view', 'players');
 			console.log(arguments);
 		});
 	},
@@ -408,21 +402,99 @@ Template.draft.events({
 		});
 	},
 	'click button.undo_pick':function() {
-		Meteor.call('undo_pick', function(e,r) {
+		Meteor.call('undo_pick', current_draft._id,  function(e,r) {
 			console.log(arguments);
 		});
 	},
 	'click button.complete_draft':function() {
-		Meteor.update(Session.get('draft')._id, {$set: {
+		Meteor.update(current_draft._id, {$set: {
 			complete:true
 		}});
+	},
+	'click button.reset_player_owners':function(e) {
+		Meteor.call('resetPlayerOwners', function(e,r) {
+			console.log(e,r);
+		});
 	},
 	'click ul.draft_nav li':function(e) {
 		Session.set('main_view', e.target.dataset.view);
 	}
 })
 
-_.extend(Template.draft, {
+Template.draft.onCreated(() => {
+	Deps.autorun(function() {
+		players_handle = Meteor.subscribe('players', Session.get('position_filter'), Session.get('name_filter'));
+		drafted_players_handle = Meteor.subscribe('drafted_players');
+		draftHandle = Meteor.subscribe('drafts');
+
+		if (draftHandle && draftHandle.ready()) {
+			var year = new Date().getYear();
+			draft = Drafts.findOne({year:year});
+			var draftId = draft ? draft._id : undefined;
+			Session.set('draft_id', draftId);
+			Session.set('draft', draft);
+			if (draft && draft.complete == true && Session.equals('main_view', 'players')) {
+				Session.set('main_view', 'results');
+			}
+		}
+
+		var draftId = Session.get('draft_id');
+		if (draftId) {
+			current_draft = Drafts.findOne(draftId);
+		} else {
+			current_draft = null;
+		}
+
+		if (draftHandle.ready() && current_draft) {
+			picksHandle = Meteor.subscribe('picks', current_draft._id);
+		}
+	});
+
+})
+
+Template.draft.helpers({
+	attributes:function(name) {
+		var disabled = {disabled:'disabled'};
+		var draft = Drafts.findOne(Session.get('draft_id'));
+		switch(name) {
+			case 'set_order':
+				if (draft && draft.hasBegun()) {
+					return disabled
+				}
+				break;
+			case 'initialize':
+				if (draft) {
+					return disabled
+				}
+				break;
+			case 'begin_draft':
+				if (!draft || draft.hasBegun()) {
+					return disabled
+				}
+				break;
+			case 'reset_draft':
+				if (!draft) {
+					return disabled
+				}
+				break;
+			case 'reset_draft_order':
+				if (draft) {
+					return disabled;
+				}
+				break;
+			case 'undo_pick':
+				if (!draft || !draft.hasBegun() || draft.current_pick < 0) {
+					return disabled;
+				}
+				break;
+			case 'complete_draft':
+				if (!draft || !draft.hasBegun()) {
+					return disabled;
+				}
+				break;
+		}
+	},
+
 	draft_begun: function() {
 		var draft = Session.get('draft');
 		return draft && draft.current_pick > 0;
@@ -432,7 +504,8 @@ _.extend(Template.draft, {
 		return draft && draft.complete == true;
 	},
 	draft_created: function() {
-		return Drafts.find().count() > 0;
+		var draft = Session.get('draft');
+		return draft != undefined;
 	},
 	searchValue: function() {
 		return Session.get('name_filter');
@@ -443,16 +516,13 @@ _.extend(Template.draft, {
 	admin_draft:function() {
 		return Session.equals('admin_pick_mode', true);
 	},
-	players_view: function() {
-		return Session.equals('main_view', 'players');
-	},
 
 	is_active_view: function(view_name) {
 		return Session.equals('main_view', view_name);
 	}
 });
 
-_.extend(Template.result_view, {
+Template.result_view.helpers({
 	round: function() {
 		var rounds = [];
 		for (var i = 1; i <= ROUNDS; i++) {
@@ -505,7 +575,13 @@ Template.result_view.events({
 	}
 })
 
-_.extend(Template.draft_sidebar, {
+Template.draft_sidebar.helpers({
+	previous_pick: function() {
+		var draft = Session.get('draft');
+		if (draft) {
+			return Picks.findOne({overall:draft.current_pick-1});
+		};
+	},
 	current_pick: function() {
 		var draft = Session.get('draft');
 		if (draft) {
@@ -528,11 +604,44 @@ _.extend(Template.draft_sidebar, {
 	}
 })
 
-Template.draft_order.user = function() {
-	return Meteor.users.find({}, {sort: {'profile.draft_slot':1}});
-}
+Template.draft_order.helpers({
+	user: function() {
+		return Meteor.users.find({}, {sort: {'profile.draft_slot':1}});
+	},
+	draft_created: function() {
+		var draft = Session.get('draft');
+		return draft != undefined;
+	}
+})
 
-_.extend(Template.position_filter, {
+Template.draft_order.events({
+	'click .arrow.up':function(e) {
+		var currentSpot = this.profile.draft_slot,
+			toSpot = this.profile.draft_slot-1;
+
+		if (toSpot < 1) {
+			Alert({text:'Player is already in the top spot'})
+		} else {
+			var userInToSpot = Meteor.users.findOne({'profile.draft_slot':toSpot});
+			Meteor.users.update(userInToSpot._id, {$inc: {'profile.draft_slot':1}})
+			Meteor.users.update(this._id, {$inc: {'profile.draft_slot':-1}});
+		}
+	},
+	'click .arrow.down': function(e) {
+		var currentSpot = this.profile.draft_slot,
+			toSpot = this.profile.draft_slot+1;
+
+		if (toSpot > 12) {
+			Alert({text:'Player is already in the last spot'})
+		} else {
+			var userInToSpot = Meteor.users.findOne({'profile.draft_slot':toSpot});
+			Meteor.users.update(userInToSpot._id, {$inc: {'profile.draft_slot':-1}})
+			Meteor.users.update(this._id, {$inc: {'profile.draft_slot':1}});
+		}
+	}
+})
+
+Template.position_filter.helpers({
 	type: function() {
 		return position_types;
 	},
@@ -544,7 +653,7 @@ _.extend(Template.position_filter, {
 			return '';
 		}
 	}
-});
+})
 
 Template.position_filter.events({
 	'click li':function(e, tmp) {
@@ -559,7 +668,18 @@ Template.pick.user = function() {
 	return user.profile.firstName + ' ' + user.profile.lastName
 }
 
-_.extend(Template.players, {
+Template.pick.playerName = function() {
+	if (this.player_id) {
+		var player = Players.findOne(this.player_id);
+		return player.firstName + ' ' + player.lastName + ', '
+			+positionMap[player.defaultPositionId].abbrev + ' '
+			+proTeams[player.proTeamId].abbrev.toUpperCase();
+	}
+
+	return '';
+}
+
+Template.players.helpers({
 	player: function() {
 		return Players.find({owner:{$exists:false}}, {sort:{percentOwned:-1, lastName:1}});
 	},
@@ -605,8 +725,8 @@ var player_row_funcs = {
 	}
 };
 
-_.extend(Template.player_row, player_row_funcs);
-_.extend(Template.no_draft_player_row, player_row_funcs);
+Template.player_row.helpers(player_row_funcs);
+Template.no_draft_player_row.helpers(player_row_funcs);
 
 Template.player_row.events({
 	'click .draft_button.active':function(e) {
@@ -616,7 +736,7 @@ Template.player_row.events({
 	}
 });
 
-_.extend(Template.owner_dropdown, {
+Template.owner_dropdown.helpers({
 	user: function() {
 		return Meteor.users.find();
 	},
@@ -631,7 +751,8 @@ Template.owner_dropdown.events({
 	}
 })
 
-_.extend(Template.rosters, {
+
+Template.rosters.helpers({
 	owner_name: function() {
 		var selected = parseInt(Session.get('roster_user'));
 		if (selected) {
@@ -646,7 +767,4 @@ _.extend(Template.rosters, {
 	player:function() {
 		return Players.find({owner:parseInt(Session.get('roster_user'))});
 	}
-});
-
-
-
+})

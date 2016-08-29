@@ -1,9 +1,16 @@
 <template name="account">
+	<img class="avatar account" src="{{gravatar}}"/>
 	<form class="change_password">
 	<label>Disable email notifications<input type="checkbox" class="no_email_checkbox" {{isChecked}}/></label>
 	<label>Old Password</label><input type="password" class="old_password"/>
 	<label>New Password</label><input type="password" class="password1"/>
 	<label>Repeat Password</label><input type="password" class="password2"/>
 	<input type="button" value="Change Password" class="change_password_button"/>
+	</form>
+
+	<form class="change_email">
+		<label>Old Email</label><input type="email" class="old_email" disabled="disabled" value="{{current_email}}"/>
+		<label>New Email</label><input type="email" class="new_email"/>
+		<input type="button" value="Change Email" class="change_email"/>
 	</form>
 </template>

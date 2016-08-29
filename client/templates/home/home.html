@@ -19,6 +19,9 @@
 		{{#each recentEntries}}
 			{{> activityEntry}}
 		{{/each}}
+		{{#if morePosts}}
+			<a class="loadMorePosts">Load More</a>
+		{{/if}}
 	</div>
 </div>
 </template>

@@ -1,7 +1,10 @@
-Session.setDefault('dues', 40);
+Session.setDefault('dues', 50);
 
 
 Template.dues.helpers({
+	dues_owed: function() {
+		return Session.get('dues');
+	},
 	owner:function() {
 		return Meteor.users.find({}, {
 			sort: {
@@ -34,10 +37,15 @@ Template.dues.helpers({
 
 Template.dues.events({
 	'click .status':function(e) {
-		if (Meteor.user() && Meteor.user().username == 'chrisbrakebill') {
+		if (GN.isAdmin()) {
 			Meteor.call('toggle_dues', this._id, !this.profile.dues_paid, function(err,res) {
-				debugger;
+				console.log(err, res);
 			});
 		}
-	}
+	},
+	'click button.reset_dues': function(e) {
+		GN.reset_dues(function(err, res) {
+			debugger;
+		});
+	},
 })

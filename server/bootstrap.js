@@ -96,12 +96,12 @@ Meteor.startup(function() {
 		if (Meteor.users.find({profile:{id:ownerData[i].id}}).count() == 0){
 			var owner = ownerData[i];
 			if (InvitedUsers.find({id:ownerData[i].id}).count() == 0) {
-
 				InvitedUsers.insert(ownerData[i]);
 			}
 
 			if (Meteor.users.find({username:ownerData[i].userName}).count() == 0) {
 				var password = (isDev ? 'chris': (new Meteor.Collection.ObjectID())._str);
+				console.log('Creating user', owner);
 				var id = Accounts.createUser({
 					email:ownerData[i].email,
 					username: ownerData[i].userName,

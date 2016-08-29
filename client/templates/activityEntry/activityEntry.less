@@ -1,12 +1,25 @@
 @import "../../variables";
 
+img.avatar {
+	border-radius: 50%;
+}
+
 .activityEntry {
 
 	padding: 10px 10px 15px 10px;
+	margin: 10px auto;
+	max-width: 600px;
 	color:@darkGrey;
 	background-color: @lightgrey;
 	border-radius: 1px;
 	box-shadow: 0 2px rgba(0,0,0,0.7);
+
+	img.avatar {
+		float: left;
+		width: 48px;
+		height: 48px;
+		margin: 4px 10px 8px 0;
+	}
 
 	h4.name {
 		font-size: 16px;
@@ -23,7 +36,8 @@
 
 	p {
 		font-size: 14px;
-		clear:both;
+		margin-top: 6px;
+		margin-left: 30px;
 	}
 
 	img.poster_img {
@@ -34,6 +48,7 @@
 
 	.reactions {
 
+		clear:both;
 		.button {
 			@background:white;
 			display: inline-block;
@@ -100,6 +115,7 @@
 
 			img {
 				width:32px;
+				height:32px;
 				float: left;
 			}
 
@@ -116,6 +132,7 @@
 
 			p {
 				margin:0;
+				margin-left: 21px;
 			}
 		}
 

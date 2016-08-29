@@ -1,9 +1,14 @@
 <template name="dues">
 	<div class="dues body">
-
+		{{#if admin}}
+			<div class="admin_tools">
+				<h4>Admin Tools</h4>
+				<button class="reset_dues">Reset Dues</button>
+			</div>
+		{{/if}}
 		<h2>
 			<div class="dues_owed">
-				Dues Owed: <span class="value">$40</span>
+				Dues Owed: <span class="value">${{dues_owed}}</span>
 			</div>
 			League Dues
 		</h2>

@@ -1,6 +1,7 @@
 <template name="activityEntry">
 <div class="activityEntry media" id="post-{{this._id}}">
  	<div class="media-body">
+ 		<img class="avatar" src="{{gravatar}}"/>
 		<h4 class="name media-heading">{{username}}<a class="postTime">{{postTime}}</a></h4>
 		<p>{{#markdown}}{{this.content}}{{/markdown}}</p>
 			<div class="reactions">
@@ -8,6 +9,7 @@
 				<span class="mehs reaction {{action 'mehs'}}"><a data-type="mehs" class="name button">Meh</a><a class="mehs count">{{variable "mehs"}}</a></span>
 				<span class="hates reaction {{action 'hates'}}"><a data-type="hates" class="name button">Hate Hate Hate</a><a class="hates count">{{variable "hates"}}</a></span>
 			</div>
+
 		<div class="comments">
 			{{#each comments}}
 				{{> comment}}
@@ -24,6 +26,7 @@
 <template name="comment">
 <div class="comment media">
  	<div class="media-body">
+ 		<img class="avatar" src="{{gravatar}}"/>
  		<span class="authorName">{{authorName}}<span class="commentTime">{{commentTime}}</span></span>
  		<p>{{#markdown}}{{this.content}}{{/markdown}}</p>
  	</div>
