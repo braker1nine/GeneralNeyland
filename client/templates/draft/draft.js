@@ -421,7 +421,7 @@ Template.draft.events({
 	}
 })
 
-Template.draft.onCreated(() => {
+Template.draft.onCreated(function() {
 	Deps.autorun(function() {
 		players_handle = Meteor.subscribe('players', Session.get('position_filter'), Session.get('name_filter'));
 		drafted_players_handle = Meteor.subscribe('drafted_players');
