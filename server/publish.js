@@ -1,5 +1,5 @@
 function sendEmailNotification(options) {
-	if (isDev) {
+	/*if (isDev) {
 		console.log('Sending emails', options);
 		Email.send({
 			to:'chris@brakebill.me',
@@ -12,7 +12,7 @@ function sendEmailNotification(options) {
 			from:options.from,
 			html:options.body
 		})
-	}
+	}*/
 }
 
 var converter = new Showdown.converter();

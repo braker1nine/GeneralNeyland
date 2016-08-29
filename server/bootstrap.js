@@ -114,12 +114,12 @@ Meteor.startup(function() {
 				});
 
 				if (id && !isDev) {
-					Email.send({
+					/*Email.send({
 						from:'chris.brakebill@gmail.com',
 						to:owner.email,
 						subject:'Welcome to General Neyland\'s Cup',
 						html: '<h1>An account has been created for you.</h1><br><b>Username:</b> ' + owner.email + '<br><b>Password:</b> ' + password + '<br>Login <a href="http://generalneylandscup.com">here.</a>'
-					})
+					})*/
 				}
 
 
