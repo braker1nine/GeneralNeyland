@@ -1,34 +1,17 @@
 <template name="activityEntry">
-<div class="activityEntry media" id="post-{{this._id}}">
+<div class="activityEntry media {{class}}" id="post-{{entry._id}}">
  	<div class="media-body">
  		<img class="avatar" src="{{gravatar}}"/>
-		<h4 class="name media-heading">{{username}}<a class="postTime">{{postTime}}</a></h4>
-		<p>{{#markdown}}{{this.content}}{{/markdown}}</p>
-			<div class="reactions">
-				<span class="likes reaction {{action 'likes'}}"><a data-type="likes" class="name button">Like</a><a class="likes count">{{variable "likes"}}</a></span>
-				<span class="mehs reaction {{action 'mehs'}}"><a data-type="mehs" class="name button">Meh</a><a class="mehs count">{{variable "mehs"}}</a></span>
-				<span class="hates reaction {{action 'hates'}}"><a data-type="hates" class="name button">Hate Hate Hate</a><a class="hates count">{{variable "hates"}}</a></span>
-			</div>
-
-		<div class="comments">
-			{{#each comments}}
-				{{> comment}}
-			{{/each}}
-			<div class="commentForm">
-				<textarea></textarea>
-				<a class="btn btn-inverse commentButton">Comment</a>
-			</div>
-		</div>
+		<h4 class="name media-heading">{{username}}<span class="postTime">{{entry.created_at}}</span></h4>
+		<p>{{#markdown}}{{entry.content}}{{/markdown}}</p>
 	</div>
 </div>
 </template>
 
-<template name="comment">
-<div class="comment media">
- 	<div class="media-body">
- 		<img class="avatar" src="{{gravatar}}"/>
- 		<span class="authorName">{{authorName}}<span class="commentTime">{{commentTime}}</span></span>
- 		<p>{{#markdown}}{{this.content}}{{/markdown}}</p>
- 	</div>
-</div>
+<template name="reactions">
+	<div class="reactions">
+		<span class="likes reaction {{action 'likes'}}"><a data-type="likes" class="name button">Like</a><a class="likes count">{{variable "likes"}}</a></span>
+		<span class="mehs reaction {{action 'mehs'}}"><a data-type="mehs" class="name button">Meh</a><a class="mehs count">{{variable "mehs"}}</a></span>
+		<span class="hates reaction {{action 'hates'}}"><a data-type="hates" class="name button">Hate Hate Hate</a><a class="hates count">{{variable "hates"}}</a></span>
+	</div>
 </template>

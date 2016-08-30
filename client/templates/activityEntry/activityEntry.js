@@ -1,47 +1,16 @@
 if (Meteor.isClient) {
 
-	function printTimeAgo(time) {
-
-		var then = new Date(time);
-		if (then.relative) {
-			console.log('Using relative');
-			return then.relative();
-		}
-
-		var now = new Date();
-		var diff = now.getTime() - time;
-
-		function printFunction(val, unit) {
-			return val + ' '+ unit + (val != 1 ? 's':'') + ' ago';
-		}
-
-		var val;
-		if (diff < 60*1000) {
-			val = Math.round(diff/1000);
-			return  val + ' seconds ago';
-		} else if (diff < 1000*60*60) {
-			val = Math.round(diff/(60*1000));
-			return printFunction(val, 'minute');
-		} else if (diff < 1000*60*60*24) {
-			val = Math.round(diff/(1000*60*60));
-			return printFunction(val, 'hour');
-		} else if (diff < 1000*60*60*24*7) {
-			val = Math.round(diff/(1000*60*60*24));
-			return printFunction(val, 'day');
-		} else if (diff < 1000*60*60*24*30) {
-			val = Math.round(diff/(1000*60*60*24*7));
-			return printFunction(val, 'week');
-		} else if (diff < 100*60*60*24*365) {
-			val = Math.round(diff/(1000*60*60*24*30));
-			return printFunction(val, 'month');
-		} else {
-			val = Math.round(diff/(1000*60*60*24*365));
-			return printFunction(val, 'year');
-		}
-	}
 	Template.activityEntry.helpers({
+		class: function() {
+			if (this.entry.previous && this.entry.previous.authorUserId == this.entry.authorUserId
+				&& this.entry.previous.created_at == this.entry.created_at) {
+				return ' repeat'
+			} else {
+				return '';
+			}
+		},
 		gravatar: function() {
-			var author = Meteor.users.findOne({'profile.id':this.authorUserId});
+			var author = Meteor.users.findOne({'profile.id':this.entry.authorUserId});
 			if (author) {
 				var email = author.emails[0].address;
 				return Gravatar.imageUrl(email)
@@ -49,7 +18,7 @@ if (Meteor.isClient) {
 		},
 
 		username: function() {
-			var author = Meteor.users.findOne({'profile.id':this.authorUserId});
+			var author = Meteor.users.findOne({'profile.id':this.entry.authorUserId});
 			if (author) {
 				return author.profile.firstName + ' ' + author.profile.lastName
 			} else {
@@ -57,91 +26,41 @@ if (Meteor.isClient) {
 			}
 		},
 
-		postTime: function() {
-			var postDate = new Date(this.created_at);
-			return postDate.relative();
-			
-		},
-
 		variable: function(type) {
-			if (this[type] && this[type].length) {
-				return this[type].length;
+			if (this.entry[type] && this.entry[type].length) {
+				return this.entry[type].length;
 			} else {
 				return 0;
 			}
 		},
 
 		action: function(type) {
-			if (this[type] && this[type].length) {
-				if (this[type].indexOf(Meteor.user().profile.id) >= 0) return "active";
+			if (this.entry[type] && this.entry[type].length) {
+				if (this.entry[type].indexOf(Meteor.user().profile.id) >= 0) return "active";
 			}
 		},
 
 		comments: function() {
-			return Comments.find({postId:this._id}, {sort:["created_at", "asc"]}).fetch();
+			return Comments.find({postId:this.entry._id}, {sort:["created_at", "asc"]}).fetch();
 		},
 	})
 
 	Template.activityEntry.events({
 		'click .reactions .button':function(e) {
-			debugger;
 			var type = e.target.dataset.type;
 			var obj = {}, modifier;
 			
-			if (this[type] && this[type].indexOf(Meteor.user().profile.id) >= 0) {
-				this[type].splice(this[type].indexOf(Meteor.user().profile.id), 1);
-				obj[type] = this[type];
+			if (this.entry[type] && this.entry[type].indexOf(Meteor.user().profile.id) >= 0) {
+				this.entry[type].splice(this.entry[type].indexOf(Meteor.user().profile.id), 1);
+				obj[type] = this.entry[type];
 				modifier = {$set:obj};
 			} else {
 				obj[type] = Meteor.user().profile.id;
 				modifier = {$push:obj};
 			}
-			Posts.update(this._id, modifier, function(error) {
+			Posts.update(this.entry._id, modifier, function(error) {
 				debugger;
 			});
 		},
-
-		'click .commentButton':function(e) {
-			var text = $(e.target).prev('textarea').val();
-			if (text != undefined && text != "") {
-				Comments.insert({
-					authorUserId:Meteor.user().profile.id,
-					postId: this._id,
-					content:text,
-					created_at:Date.now()
-				}, function(err, id) {
-					if (err) {
-
-					} else {
-						$(e.target).prev('textarea').val('');
-					}
-				})
-			}
-		},
-		'click .postTime':function(e) {
-			e.preventDefault();
-			FlowRouter.go('/post/' + this._id + '/');
-		}
 	});
-
-	Template.comment.helpers({
-		gravatar: function() {
-			var author = Meteor.users.findOne({'profile.id':this.authorUserId});
-			var email = author.emails[0].address;
-			return Gravatar.imageUrl(email)
-		},
-		authorName: function() {
-			var user = Meteor.users.findOne({'profile.id':this.authorUserId});
-			if (user) {
-				return user.profile.firstName + ' ' + user.profile.lastName;
-			} else {
-				return '';
-			}
-		},
-
-		commentTime: function() {
-			return new Date(this.created_at).relative();
-		}
-	})
-
 }

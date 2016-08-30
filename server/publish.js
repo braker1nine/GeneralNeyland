@@ -141,64 +141,8 @@ Meteor.methods({
 	},
 });
 
-
-
-Comments = new Meteor.Collection('comments');
-Meteor.publish('comments', function(post_id) {
-	var selector = {};
-	if (post_id) {
-		selector = {postId:post_id};
-	}
-
-	return Comments.find(selector, {sort:[["created_at", "desc"]]});
-});
-
-/* For comment notifications */
-var initialized = false;
-Comments.find({}, defaultOptions).observe({
-	added: function(comment) {
-		if (initialized) {
-			var post = Posts.findOne(comment.postId);
-			var otherComments = Comments.find({postId:comment.postId}).fetch();
-			var receivers = Meteor.users.find({
-				$and:[
-					{$or:[
-						{'profile.id':{$in: _.pluck(otherComments, 'authorUserId')}},
-						{'profile.id':post.authorUserId}
-
-					]},
-					{$not:{'profile.id':comment.authorUserId}},
-					{$not:{'profile.disableEmails':true}}
-				]
-			}).fetch();
-			var emails = _.map(receivers, function(user) {
-				return (user.emails && user.emails.length ? user.emails[0].address : '');
-			});
-
-			var sender = Meteor.users.findOne({'profile.id':comment.authorUserId}) || {profile: {firstName:'Kaiser', lastName:'Sose'}};
-
-			var body = '' + sender.profile.firstName + ' '  + sender.profile.lastName + ' commented on <a href="' + Meteor.absoluteUrl() + 'post/' + post._id + '/">a message</a>.';
-			if (emails.length) {
-				sendEmailNotification({
-					from:(sender.emails && sender.emails.length ? sender.emails[0].address : 'notifications@generalneylandscup.com'),
-					to: emails,
-					body: body
-				});
-			}
-		}
-	}
-});
-
 initialized = true;
 
-Comments.allow({
-	insert:function(userId, doc) {
-		if (!userId) return false;
-
-
-		return true;
-	}
-})
 
 /* Comment Model
 {
@@ -211,29 +155,6 @@ Comments.allow({
 }
 
 */
-
-/* ----------------- Comment Server Methods ---------- */
-Meteor.methods({
-	createComment: function(text, postId) {
-
-	},
-
-	deleteComment: function (commentId) {
-
-	},
-
-});
-/* ------------------------------------------------------ */
-
-Meteor.methods({
-	mostHatedUser: function() {
-		console.log('mostHatedUser');
-	},
-
-	mostLikedUser: function() {
-
-	}
-});
 
 
 /* ---------------------- #Dues Methods -------------- */

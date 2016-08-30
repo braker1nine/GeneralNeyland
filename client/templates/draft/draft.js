@@ -4,6 +4,7 @@ Session.setDefault('main_view', 'players');
 Session.setDefault('selected_round', "1");
 Session.setDefault('roster_user', null);
 Session.setDefault('admin_pick_mode', false);
+Session.setDefault('picking', false);
 Drafts = new Meteor.Collection('drafts', {
 	transform: function(doc) {
 		return new Draft(doc);
@@ -661,23 +662,24 @@ Template.position_filter.events({
 	}
 });
 
+Template.pick.helpers({
 
+	user: function() {
+		var user = Meteor.users.findOne({'profile.id':this.pick.owner});
+		return user.profile.firstName + ' ' + user.profile.lastName
+	},
 
-Template.pick.user = function() {
-	var user = Meteor.users.findOne({'profile.id':this.owner});
-	return user.profile.firstName + ' ' + user.profile.lastName
-}
+	playerName: function() {
+		if (this.pick.player_id) {
+			var player = Players.findOne(this.pick.player_id);
+			return player.firstName + ' ' + player.lastName + ', '
+				+positionMap[player.defaultPositionId].abbrev + ' '
+				+proTeams[player.proTeamId].abbrev.toUpperCase();
+		}
 
-Template.pick.playerName = function() {
-	if (this.player_id) {
-		var player = Players.findOne(this.player_id);
-		return player.firstName + ' ' + player.lastName + ', '
-			+positionMap[player.defaultPositionId].abbrev + ' '
-			+proTeams[player.proTeamId].abbrev.toUpperCase();
-	}
-
-	return '';
-}
+		return '';
+	},
+});
 
 Template.players.helpers({
 	player: function() {
@@ -706,7 +708,7 @@ var player_row_funcs = {
 	percent_owned: function() {
 		return this.percentOwned.toFixed(1) + '%';
 	},
-	isUserPick: function() {
+	canPick: function() {
 		var isUserPick = false;
 		var draft = Session.get('draft');
 		if (draft && draft.current_pick) {
@@ -716,7 +718,7 @@ var player_row_funcs = {
 			}
 		}
 
-		return Session.equals('admin_pick_mode', true) || isUserPick;
+		return Session.equals('picking', false) && (Session.equals('admin_pick_mode', true) || isUserPick);
 	},
 
 	draft_begun: function() {
@@ -730,9 +732,13 @@ Template.no_draft_player_row.helpers(player_row_funcs);
 
 Template.player_row.events({
 	'click .draft_button.active':function(e) {
-		Meteor.call('makePick', draft._id, this._id, function(err, res) {
-			Session.set('admin_pick_mode', false);
-		});
+		if (Session.equals('picking', false)) {
+			Session.set('picking', true);
+			Meteor.call('makePick', draft._id, this._id, function(err, res) {
+				Session.set('admin_pick_mode', false);
+				Session.set('picking', false);
+			});
+		}
 	}
 });
 

@@ -16,6 +16,17 @@
 				<button class="reset_player_owners">Reset Player Owners</button>
 			</div>
 		{{/if}}
+		<div class="sidebar">
+			{{#if order_set}}
+				{{#if draft_begun}}
+					{{>draft_sidebar}}
+				{{else}}
+					{{>draft_order}}
+				{{/if}}
+			{{else}}
+				Draft order hasn't been set yet.
+			{{/if}}
+		</div>
 		<div class="main_view">
 			<ul class="draft_nav">
 				{{#unless draft_complete}}<li data-view="players" class="{{#if is_active_view 'players'}}active{{/if}}">Available Players</li>{{/unless}}
@@ -32,19 +43,6 @@
 				{{>rosters}}
 			{{/if}}
 		</div>
-		<div class="sidebar">
-			{{#if order_set}}
-				{{#if draft_begun}}
-					{{>draft_sidebar}}
-				{{else}}
-					{{>draft_order}}
-				{{/if}}
-			{{else}}
-				Draft order hasn't been set yet.
-			{{/if}}
-		</div>
-
-
 		<div style="clear:both;"></div>
 	</div>
 </template>
@@ -87,9 +85,9 @@
 		<thead>
 			<tr>
 				<th>Name</th>
-				<th>Position</th>
-				<th>Pro Team</th>
-				<th>Percent Owned</th>
+				<th>Pos</th>
+				<th>Team</th>
+				<th>% Owned</th>
 			</tr>
 		</thead>
 		{{#each player}}
@@ -109,7 +107,7 @@
 
 <template name="player_row">
 <tr class="player_row">
-	{{#if draft_begun}}<td class="draft_button_cell"><div class="draft_button {{#if isUserPick}}active{{/if}}">Draft</div></td>{{/if}}
+	{{#if draft_begun}}<td class="draft_button_cell"><div class="draft_button {{#if canPick}}active{{/if}}">Draft</div></td>{{/if}}
 	<td class="player_name">{{this.firstName}} {{this.lastName}}</td>
 	<td class="player_position">{{position}}</td>
 	<td class="player_pro_team">{{pro_team}}</td>
@@ -130,33 +128,27 @@
 <template name="draft_sidebar">
 	<h3>What's Happening</h3>
 	<div class="upcoming_picks">
-		<h4>Previous Pick</h4>
-			{{#with previous_pick}}
-				{{>pick}}
-			{{/with}}
-		<h4>Current Pick</h4>
-			{{#with current_pick}}
-				{{>pick}}
-			{{/with}}
-		<h4>On Deck</h4>
-			{{#with next_pick}}
-				{{>pick}}
-			{{/with}}
 
-		<h4>In the Hole</h4>
-			{{#with next_next_pick}}
-				{{>pick}}
-			{{/with}}
+		{{#if previous_pick}}
+			{{>pick pick=previous_pick title="Previous Pick" class="previous_pick"}}
+		{{/if}}
+
+		{{> pick pick=current_pick title="Current Pick" class="current_pick"}}
+		{{> pick pick=next_pick title="On Deck" class="on_deck"}}
+		{{> pick pick=next_next_pick title="In the Hole" class="in_the_hole"}}
 	</div>
 
 </template>
 
 <template name="pick">
-	<div class="pick">
-		{{this.overall}}. {{user}}
-		{{#if playerName}}
-			<div class="pick-player">{{playerName}}</div>
-		{{/if}}
+	<div class="pick {{this.class}}">
+		<h4>{{this.title}}</h4>
+		<div class="pick_details">
+			{{this.pick.overall}}. {{user}}
+			{{#if playerName}}
+				<div class="pick-player">{{playerName}}</div>
+			{{/if}}
+		</div>
 	</div>
 </template>
 
@@ -174,9 +166,9 @@
 		<tr>
 			{{#if draft_begun}}<th></th>{{/if}}
 			<th>Name</th>
-			<th>Position</th>
-			<th>Pro Team</th>
-			<th>Percent Owned</th>
+			<th>Pos</th>
+			<th>Team</th>
+			<th>% Owned</th>
 		</tr>
 	</thead>
 	<tbody>

@@ -1,4 +1,4 @@
-Session.setDefault('dues', 50);
+Session.setDefault('dues', 55);
 
 
 Template.dues.helpers({

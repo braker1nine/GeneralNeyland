@@ -6,38 +6,48 @@ img.avatar {
 
 .activityEntry {
 
-	padding: 10px 10px 15px 10px;
+	padding: 0;
 	margin: 10px auto;
 	max-width: 600px;
 	color:@darkGrey;
-	background-color: @lightgrey;
-	border-radius: 1px;
-	box-shadow: 0 2px rgba(0,0,0,0.7);
+
+	&.repeat {
+		min-height: 0;
+		margin-top: -8px;
+
+		.avatar {
+			display: none;
+		}
+
+		.name {
+			display: none;
+		}
+	}
 
 	img.avatar {
 		float: left;
-		width: 48px;
-		height: 48px;
-		margin: 4px 10px 8px 0;
+		width: 40px;
+		height: 40px;
+		margin: 0 10px 0 0;
 	}
 
 	h4.name {
 		font-size: 16px;
 		margin:10px 0 0 0;
+		line-height: 1.2em;
 
 		.postTime {
 			font-weight: normal;
 			font-size: 12px;
-			margin-right: 4px;
-			float: right;
-			cursor: pointer;
+			margin-left: 4px;
+			color: #aaa;
 		}
 	}
 
 	p {
 		font-size: 14px;
-		margin-top: 6px;
-		margin-left: 30px;
+		margin-top: 0;
+		margin-left: 25px;
 	}
 
 	img.poster_img {

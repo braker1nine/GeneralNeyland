@@ -27,8 +27,7 @@ table {
 }
 
 .draft .main_view {
-	width:75%;
-	float: left;
+	margin-right: 300px;
 	padding: 10px 16px;
 	border-right: 1px solid @lightgrey;
 }
@@ -115,13 +114,14 @@ table {
 .draft_button {
 	display: inline-block;
 	background-color: #DDD;
-	.threeDPushed(#DDD);
 	color:#999;
+	border-radius: 3px;
+	padding: 2px 10px;
+	font-weight: bold;
 
 	&.active {
 		color:white;
 		background-color:@red;
-		.threeD(@red);
 	}
 }
 
@@ -138,8 +138,8 @@ table {
 }
 
 .draft .sidebar {
-	width:25%;
-	float: left;
+	width:300px;
+	float: right;
 	padding:10px;
 }
 
@@ -184,6 +184,7 @@ table {
 /* Position Filter Styles */
 ul.positions-filter {
 	padding:0;
+	text-align: center;
 }
 ul.positions-filter li {
 	text-align: center;
@@ -196,12 +197,63 @@ ul.positions-filter li {
 
 	&:not(.active) {
 		background-color: @lightgrey;
-		.threeD(@lightgrey);
 	}
 
 	&.active {
 		background-color: @darkGrey;
-		.threeDPushed(@darkGrey);
 		color:@white;
+	}
+
+	&:last-child {
+		margin: 0;
+	}
+}
+
+@media (max-width: 1000px) {
+	.draft .main_view {
+		margin-right: 0;
+		border-right: none;
+	}
+
+	.draft .sidebar {
+		display: block;
+		float: none;
+		width: auto;
+	}
+
+	.pick {
+		display: inline-block;
+		vertical-align: top;
+		margin-right: 1em;
+
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+}
+
+@media (max-width: 670px) {
+	.draft .main_view {
+		padding: 0;
+	}
+
+	ul.positions-filter li {
+		font-size: 0.8rem;
+		margin: 0 0.1rem 0.1rem 0;
+		padding: 0.8rem 0.5rem;
+		min-width: 44px;
+		width: auto;
+	}
+
+	.pick {
+		display: block;
+		margin-right: 0;
+	}
+}
+
+@media (max-width: 460px) {
+	.draft .available_players h2 input {
+		float: none;
+		display: block;
 	}
 }

@@ -16,8 +16,8 @@
 				<a class="button postButton">Post</a>
 			</div>
 		</div>
-		{{#each recentEntries}}
-			{{> activityEntry}}
+		{{#each entry in recentEntries}}
+			{{> activityEntry entry=entry}}
 		{{/each}}
 		{{#if morePosts}}
 			<a class="loadMorePosts">Load More</a>
